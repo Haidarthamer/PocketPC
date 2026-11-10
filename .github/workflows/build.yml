@@ -43,6 +43,12 @@ jobs:
         with:
           gradle-version: '8.11.1'
 
+      # ci/build.log is committed, so it is inherited by the next run. Reset it,
+      # otherwise the log grows without bound and embeds stale run data (the
+      # recorded artifact URL would point at the previous run).
+      - name: Reset evidence log
+        run: rm -f ci/build.log
+
       - name: Ensure Android SDK packages
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
