@@ -13,117 +13,114 @@ Daemon will be stopped at the end of the build
 > Task :system:capability:compileTestJava NO-SOURCE
 > Task :system:capability:testClasses UP-TO-DATE
 > Task :system:capability:test
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794343709346.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794343930400.json
 
-BUILD SUCCESSFUL in 26s
+BUILD SUCCESSFUL in 20s
 4 actionable tasks: 4 executed
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
+> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:desktop:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:preBuild UP-TO-DATE
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
-> Task :system:desktop:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:preDebugBuild UP-TO-DATE
-> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:desktop:processResources NO-SOURCE
 > Task :system:capability-android:preBuild UP-TO-DATE
 > Task :system:capability-android:preDebugBuild UP-TO-DATE
-> Task :system:desktop:processResources NO-SOURCE
-> Task :graphics:compositor:writeDebugAarMetadata
-> Task :system:capability-android:writeDebugAarMetadata
 > Task :app:generateDebugResValues
-> Task :system:capability-android:generateDebugResValues FROM-CACHE
-> Task :graphics:compositor:generateDebugResValues FROM-CACHE
-> Task :graphics:compositor:generateDebugResources
-> Task :system:capability-android:generateDebugResources
+> Task :system:capability-android:writeDebugAarMetadata
+> Task :graphics:compositor:writeDebugAarMetadata
 > Task :system:capability:compileKotlin UP-TO-DATE
+> Task :graphics:compositor:generateDebugResValues FROM-CACHE
+> Task :system:capability-android:generateDebugResValues FROM-CACHE
 > Task :system:capability:compileJava NO-SOURCE
 > Task :system:capability:processResources NO-SOURCE
+> Task :app:generateDebugResources
 > Task :system:capability:classes UP-TO-DATE
+> Task :graphics:compositor:generateDebugResources
+> Task :system:capability-android:generateDebugResources
 > Task :system:capability:jar UP-TO-DATE
-> Task :graphics:compositor:packageDebugResources
 > Task :system:capability-android:packageDebugResources
+> Task :graphics:compositor:packageDebugResources
 > Task :graphics:compositor:extractDeepLinksDebug
 > Task :system:capability-android:extractDeepLinksDebug FROM-CACHE
 > Task :system:capability-android:processDebugManifest
 > Task :graphics:compositor:processDebugManifest
 > Task :system:capability-android:compileDebugLibraryResources
 > Task :graphics:compositor:compileDebugLibraryResources
-> Task :graphics:compositor:parseDebugLocalResources
 > Task :system:capability-android:parseDebugLocalResources
+> Task :graphics:compositor:parseDebugLocalResources
 > Task :system:capability-android:generateDebugRFile
-> Task :graphics:compositor:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:generateDebugRFile
 > Task :system:capability-android:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :graphics:compositor:javaPreCompileDebug
+> Task :graphics:compositor:checkKotlinGradlePluginConfigurationErrors SKIPPED
 
 > Task :system:capability-android:compileDebugKotlin
 w: file:///home/runner/work/PocketPC/PocketPC/system/capability-android/src/main/kotlin/dev/pocketpc/system/capability/android/AndroidHardwareSource.kt:55:63 'static field CPU_ABI: String!' is deprecated. Deprecated in Java.
 
+> Task :graphics:compositor:javaPreCompileDebug
 > Task :system:capability-android:javaPreCompileDebug FROM-CACHE
+> Task :graphics:compositor:compileDebugKotlin
 > Task :system:capability-android:compileDebugJavaWithJavac NO-SOURCE
 > Task :system:desktop:compileKotlin
+> Task :graphics:compositor:compileDebugJavaWithJavac NO-SOURCE
 > Task :system:desktop:compileJava NO-SOURCE
 > Task :system:desktop:classes UP-TO-DATE
-> Task :system:desktop:jar
+> Task :graphics:compositor:bundleLibCompileToJarDebug
 > Task :system:capability-android:bundleLibCompileToJarDebug
 > Task :graphics:compositor:mergeDebugShaders
-> Task :graphics:compositor:compileDebugShaders NO-SOURCE
-> Task :graphics:compositor:generateDebugAssets UP-TO-DATE
 > Task :system:capability-android:mergeDebugShaders
+> Task :graphics:compositor:compileDebugShaders NO-SOURCE
 > Task :system:capability-android:compileDebugShaders NO-SOURCE
 > Task :system:capability-android:generateDebugAssets UP-TO-DATE
+> Task :graphics:compositor:generateDebugAssets UP-TO-DATE
+> Task :system:desktop:jar
 > Task :graphics:compositor:packageDebugAssets
-> Task :graphics:compositor:compileDebugKotlin
-> Task :graphics:compositor:compileDebugJavaWithJavac NO-SOURCE
 > Task :system:capability-android:packageDebugAssets
-> Task :graphics:compositor:bundleLibCompileToJarDebug
 > Task :system:capability-android:bundleLibRuntimeToJarDebug
 > Task :graphics:compositor:bundleLibRuntimeToJarDebug
-> Task :app:checkDebugAarMetadata
-> Task :app:mapDebugSourceSetPaths
-> Task :app:generateDebugResources
-> Task :app:packageDebugResources
-> Task :app:parseDebugLocalResources
-> Task :app:createDebugCompatibleScreenManifests
-> Task :app:extractDeepLinksDebug FROM-CACHE
 > Task :graphics:compositor:processDebugJavaRes
 > Task :system:capability-android:processDebugJavaRes
 > Task :system:capability-android:bundleLibRuntimeToDirDebug
-> Task :app:processDebugMainManifest
 > Task :graphics:compositor:bundleLibRuntimeToDirDebug
-> Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebug FROM-CACHE
-> Task :app:mergeDebugShaders
-> Task :app:compileDebugShaders NO-SOURCE
-> Task :app:generateDebugAssets UP-TO-DATE
-> Task :app:mergeDebugResources
-> Task :graphics:compositor:mergeDebugJniLibFolders
 > Task :system:capability-android:mergeDebugJniLibFolders
+> Task :graphics:compositor:mergeDebugJniLibFolders
 > Task :graphics:compositor:mergeDebugNativeLibs NO-SOURCE
 > Task :system:capability-android:mergeDebugNativeLibs NO-SOURCE
 > Task :graphics:compositor:copyDebugJniLibsProjectOnly
 > Task :system:capability-android:copyDebugJniLibsProjectOnly
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug FROM-CACHE
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:mergeDebugResources
+> Task :app:processDebugManifest
+> Task :app:javaPreCompileDebug FROM-CACHE
+> Task :app:mergeDebugShaders
+> Task :app:processDebugManifestForPackage
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
 > Task :app:compressDebugAssets
 > Task :app:desugarDebugFileDependencies
 > Task :app:processDebugResources
 > Task :app:checkDebugDuplicateClasses
 
-> Task :app:compileDebugKotlin
+> Task :app:compileDebugKotlin FAILED
 e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/MainActivity.kt:249:47 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
 fun KeyEvent.toChord(): KeyChord?
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/MainActivity.kt:258:45 Unresolved reference 'copy'.
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopIcons.kt:200:14 This foundation API is experimental and is likely to change or be removed in the future.
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:271:39 Unresolved reference 'pointerInput'.
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:271:58 Unresolved reference 'detectTapGestures'.
+e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:271:14 Unresolved reference 'pointerInput'.
+e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:271:33 Unresolved reference 'detectTapGestures'.
 e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:272:9 Unresolved reference 'detectTapGestures'.
 
-> Task :app:compileDebugKotlin FAILED
 > Task :app:mergeExtDexDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794343733519.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794343949601.json
 
 FAILURE: Build failed with an exception.
 
@@ -332,5 +329,5 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 	... 2 more
 
 
-BUILD FAILED in 1m 23s
+BUILD FAILED in 1m 1s
 63 actionable tasks: 55 executed, 6 from cache, 2 up-to-date

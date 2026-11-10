@@ -2,16 +2,16 @@
 
 | field | value |
 | --- | --- |
-| commit | `fcb288106d4eb76419aa92a4a216b9cbf1064dd2` |
-| run | [42898625059](https://github.com/Haidarthamer/PocketPC/actions/runs/42898625059) |
-| date | 2026-11-10T20:50:13Z |
+| commit | `b95127951733c9c02096222cdb627d1dabcddd6d` |
+| run | [42899241821](https://github.com/Haidarthamer/PocketPC/actions/runs/42899241821) |
+| date | 2026-11-10T20:53:28Z |
 | java | openjdk version "17.0.21" 2026-10-20 |
 | gradle | Gradle 8.11.1 |
 | result | **failure** |
 
 ## Unit tests
 ```
-<testsuite name="dev.pocketpc.system.capability.CapabilityEvaluatorTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-10T20:48:49" hostname="runnervmwuk1x" time="0.06">
+<testsuite name="dev.pocketpc.system.capability.CapabilityEvaluatorTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-10T20:52:26" hostname="runnervmwuk1x" time="0.051">
 ```
 
 ## Gradle output (tail)
@@ -134,6 +134,6 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 	... 2 more
 
 
-BUILD FAILED in 1m 23s
+BUILD FAILED in 1m 1s
 63 actionable tasks: 55 executed, 6 from cache, 2 up-to-date
 ```
