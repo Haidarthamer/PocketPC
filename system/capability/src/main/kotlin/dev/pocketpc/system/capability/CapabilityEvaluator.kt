@@ -67,11 +67,9 @@ public object CapabilityEvaluator {
         if (base.state == CapabilityState.UNSUPPORTED) {
             return unsupported(Feature.TASKBAR, base.detail)
         }
-        val notes = buildList {
-            notes@ run {
-                notes += "Volume is adjusted through the app's own media stream; changing system volume needs a user-granted permission"
-                if (s.sdkInt < 23) notes += "Brightness control requires API 23+"
-            }
+        val notes = buildList<String> {
+            add("Volume is adjusted through the app's own media stream; changing system volume needs a user-granted permission")
+            if (s.sdkInt < 23) add("Brightness control requires API 23+")
         }
         return CapabilityReport(
             Feature.TASKBAR,
