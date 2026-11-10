@@ -49,6 +49,25 @@ jobs:
       - name: Reset evidence log
         run: rm -f ci/build.log
 
+      # A malformed workflow file fails before any job runs, producing a 0-second run with
+      # no logs -- which is indistinguishable from an infrastructure problem. Checking the
+      # YAML (and that every referenced script exists) makes that self-diagnosing.
+      - name: Validate workflow and CI scripts
+        run: |
+          set -o pipefail
+          python3 - <<'PY_CHK' 2>&1 | tee -a ci/build.log
+          import yaml, os, sys
+          doc = yaml.safe_load(open('.github/workflows/build.yml'))
+          steps = doc['jobs']['verify']['steps']
+          print(f"workflow OK: {len(steps)} steps")
+          for s in steps:
+              run = s.get('run', '')
+              for token in ('scripts/ci/failures.py', 'scripts/ci/totals.py'):
+                  if token in run and not os.path.exists(token):
+                      sys.exit(f"missing script referenced by CI: {token}")
+          print("referenced scripts present")
+          PY_CHK
+
       - name: Ensure Android SDK packages
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
@@ -147,29 +166,14 @@ jobs:
             echo
             echo "Failure details:"
             echo '```'
-            find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
-              xargs -0 -r python3 -c '
-import sys, xml.etree.ElementTree as ET
-for path in sys.argv[1:]:
-    try: root = ET.parse(path).getroot()
-    except Exception: continue
-    for case in root.iter("testcase"):
-        for fail in list(case.iter("failure")) + list(case.iter("error")):
-            msg = (fail.get("message") or "").strip().replace("\n", " ")
-            print(f"{case.get(\"classname\")}.{case.get(\"name\")}: {msg[:300]}")
-' || echo "no failures"
+            # Kept as a checked-in script rather than inline python: the quoting needed to
+            # run python inside a YAML block scalar silently breaks the workflow file.
+            python3 scripts/ci/failures.py 2>/dev/null || echo "no failures"
             echo '```'
             echo
             echo "Totals:"
             echo '```'
-            found=$(find . -path '*build/test-results*' -name 'TEST-*.xml' 2>/dev/null | wc -l)
-            tests=$(find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
-              xargs -0 -r grep -h -o 'tests="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc 2>/dev/null || echo 0)
-            fails=$(find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
-              xargs -0 -r grep -h -o 'failures="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc 2>/dev/null || echo 0)
-            errs=$(find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
-              xargs -0 -r grep -h -o 'errors="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc 2>/dev/null || echo 0)
-            echo "$found test suites, $tests tests, $fails failures, $errs errors"
+            python3 scripts/ci/totals.py 2>/dev/null || echo "totals unavailable"
             echo '```'
             echo
             echo "## Gradle output (tail)"
