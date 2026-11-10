@@ -13,85 +13,85 @@ Daemon will be stopped at the end of the build
 > Task :system:capability:compileTestJava NO-SOURCE
 > Task :system:capability:testClasses UP-TO-DATE
 > Task :system:capability:test
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794343930400.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794344223447.json
 
-BUILD SUCCESSFUL in 20s
+BUILD SUCCESSFUL in 27s
 4 actionable tasks: 4 executed
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
+> Task :app:preBuild UP-TO-DATE
+> Task :graphics:compositor:preBuild UP-TO-DATE
 > Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :system:desktop:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :graphics:compositor:preBuild UP-TO-DATE
-> Task :app:preBuild UP-TO-DATE
-> Task :app:preDebugBuild UP-TO-DATE
 > Task :graphics:compositor:preDebugBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
-> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :system:desktop:processResources NO-SOURCE
 > Task :system:capability-android:preBuild UP-TO-DATE
 > Task :system:capability-android:preDebugBuild UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :app:generateDebugResValues
-> Task :system:capability-android:writeDebugAarMetadata
 > Task :graphics:compositor:writeDebugAarMetadata
+> Task :system:capability-android:writeDebugAarMetadata
 > Task :system:capability:compileKotlin UP-TO-DATE
 > Task :graphics:compositor:generateDebugResValues FROM-CACHE
 > Task :system:capability-android:generateDebugResValues FROM-CACHE
 > Task :system:capability:compileJava NO-SOURCE
 > Task :system:capability:processResources NO-SOURCE
-> Task :app:generateDebugResources
 > Task :system:capability:classes UP-TO-DATE
+> Task :app:generateDebugResources
 > Task :graphics:compositor:generateDebugResources
 > Task :system:capability-android:generateDebugResources
 > Task :system:capability:jar UP-TO-DATE
-> Task :system:capability-android:packageDebugResources
 > Task :graphics:compositor:packageDebugResources
+> Task :system:capability-android:packageDebugResources
 > Task :graphics:compositor:extractDeepLinksDebug
 > Task :system:capability-android:extractDeepLinksDebug FROM-CACHE
 > Task :system:capability-android:processDebugManifest
 > Task :graphics:compositor:processDebugManifest
-> Task :system:capability-android:compileDebugLibraryResources
 > Task :graphics:compositor:compileDebugLibraryResources
-> Task :system:capability-android:parseDebugLocalResources
+> Task :system:capability-android:compileDebugLibraryResources
 > Task :graphics:compositor:parseDebugLocalResources
-> Task :system:capability-android:generateDebugRFile
+> Task :system:capability-android:parseDebugLocalResources
 > Task :graphics:compositor:generateDebugRFile
-> Task :system:capability-android:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:capability-android:generateDebugRFile
+> Task :system:capability-android:checkKotlinGradlePluginConfigurationErrors SKIPPED
 
 > Task :system:capability-android:compileDebugKotlin
 w: file:///home/runner/work/PocketPC/PocketPC/system/capability-android/src/main/kotlin/dev/pocketpc/system/capability/android/AndroidHardwareSource.kt:55:63 'static field CPU_ABI: String!' is deprecated. Deprecated in Java.
 
-> Task :graphics:compositor:javaPreCompileDebug
-> Task :system:capability-android:javaPreCompileDebug FROM-CACHE
 > Task :graphics:compositor:compileDebugKotlin
+> Task :system:capability-android:javaPreCompileDebug
+> Task :graphics:compositor:javaPreCompileDebug
 > Task :system:capability-android:compileDebugJavaWithJavac NO-SOURCE
-> Task :system:desktop:compileKotlin
 > Task :graphics:compositor:compileDebugJavaWithJavac NO-SOURCE
-> Task :system:desktop:compileJava NO-SOURCE
-> Task :system:desktop:classes UP-TO-DATE
 > Task :graphics:compositor:bundleLibCompileToJarDebug
 > Task :system:capability-android:bundleLibCompileToJarDebug
 > Task :graphics:compositor:mergeDebugShaders
 > Task :system:capability-android:mergeDebugShaders
-> Task :graphics:compositor:compileDebugShaders NO-SOURCE
 > Task :system:capability-android:compileDebugShaders NO-SOURCE
 > Task :system:capability-android:generateDebugAssets UP-TO-DATE
+> Task :graphics:compositor:compileDebugShaders NO-SOURCE
 > Task :graphics:compositor:generateDebugAssets UP-TO-DATE
-> Task :system:desktop:jar
-> Task :graphics:compositor:packageDebugAssets
 > Task :system:capability-android:packageDebugAssets
-> Task :system:capability-android:bundleLibRuntimeToJarDebug
+> Task :graphics:compositor:packageDebugAssets
 > Task :graphics:compositor:bundleLibRuntimeToJarDebug
+> Task :system:capability-android:bundleLibRuntimeToJarDebug
+> Task :system:desktop:compileKotlin
+> Task :system:desktop:compileJava NO-SOURCE
+> Task :system:desktop:classes UP-TO-DATE
+> Task :system:desktop:jar
 > Task :graphics:compositor:processDebugJavaRes
 > Task :system:capability-android:processDebugJavaRes
-> Task :system:capability-android:bundleLibRuntimeToDirDebug
 > Task :graphics:compositor:bundleLibRuntimeToDirDebug
 > Task :system:capability-android:mergeDebugJniLibFolders
+> Task :system:capability-android:mergeDebugNativeLibs NO-SOURCE
 > Task :graphics:compositor:mergeDebugJniLibFolders
 > Task :graphics:compositor:mergeDebugNativeLibs NO-SOURCE
-> Task :system:capability-android:mergeDebugNativeLibs NO-SOURCE
 > Task :graphics:compositor:copyDebugJniLibsProjectOnly
 > Task :system:capability-android:copyDebugJniLibsProjectOnly
+> Task :system:capability-android:bundleLibRuntimeToDirDebug
 > Task :app:checkDebugAarMetadata
 > Task :app:mapDebugSourceSetPaths
 > Task :app:packageDebugResources
@@ -113,14 +113,11 @@ w: file:///home/runner/work/PocketPC/PocketPC/system/capability-android/src/main
 > Task :app:checkDebugDuplicateClasses
 
 > Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/MainActivity.kt:249:47 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/MainActivity.kt:250:47 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
 fun KeyEvent.toChord(): KeyChord?
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:271:14 Unresolved reference 'pointerInput'.
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:271:33 Unresolved reference 'detectTapGestures'.
-e: file:///home/runner/work/PocketPC/PocketPC/app/src/main/kotlin/dev/pocketpc/app/ui/desktop/DesktopScreen.kt:272:9 Unresolved reference 'detectTapGestures'.
 
 > Task :app:mergeExtDexDebug
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794343949601.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794344248991.json
 
 FAILURE: Build failed with an exception.
 
@@ -165,6 +162,35 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:com
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionException: A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
@@ -294,6 +320,35 @@ Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionExcept
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilation error. See log for more details
@@ -329,5 +384,5 @@ Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilat
 	... 2 more
 
 
-BUILD FAILED in 1m 1s
-63 actionable tasks: 55 executed, 6 from cache, 2 up-to-date
+BUILD FAILED in 1m 25s
+63 actionable tasks: 56 executed, 5 from cache, 2 up-to-date
