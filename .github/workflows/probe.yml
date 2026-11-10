@@ -1,0 +1,18 @@
+name: probe
+on:
+  push:
+    branches: ['arena/**']
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: environment
+        run: |
+          echo "runner: $RUNNER_OS $RUNNER_ARCH"
+          java -version 2>&1 | head -2
+          echo "--- reachability of dependency hosts ---"
+          for u in https://repo1.maven.org/maven2/ https://dl.google.com/android/repository/repository2-3.xml https://services.gradle.org/distributions/; do
+            echo "$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 -I $u)  $u"
+          done
