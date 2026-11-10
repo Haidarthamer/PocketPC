@@ -2,16 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Phase 1 requests no permissions. Hardware detection uses only APIs that require
-      none, and the project constitution forbids broad permissions without necessity.
+      No dangerous permissions are requested. Battery, network, thermal and audio state
+      are all readable through APIs that require none, and the constitution forbids broad
+      permissions without necessity.
     -->
 
-    <!-- Required for the hardware GL probe to create an EGL context. -->
+    <!--
+      Declared as not required: the desktop runs without GL, and the GPU verification
+      engine reports UNSUPPORTED/FAILED rather than assuming a driver is present.
+    -->
     <uses-feature android:glEsVersion="0x00020000" android:required="false" />
     <uses-feature android:name="android.hardware.vulkan.version" android:version="0x400003" android:required="false" />
 
     <application
         android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.PocketPC">

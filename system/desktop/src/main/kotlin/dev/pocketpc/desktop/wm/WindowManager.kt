@@ -232,6 +232,21 @@ public class WindowManager(
         _windows[id] = w.copy(restoreBounds = w.bounds)
     }
 
+    /**
+     * Applies an externally computed geometry (used by the tiling layout and keyboard
+     * snapping). Bounds are still constrained to the viewport, so a caller cannot place a
+     * window off-screen.
+     */
+    public fun applyBounds(id: WindowId, bounds: WindowRect) {
+        val w = _windows[id] ?: return
+        _windows[id] = w.copy(
+            bounds = viewport.constrain(bounds),
+            restoreBounds = if (w.keepsRestoreBounds) w.restoreBounds else w.bounds,
+            state = if (w.state == WindowState.MINIMIZED) WindowState.NORMAL else w.state,
+            snappedTo = SnapEdge.NONE,
+        )
+    }
+
     /** Called on rotation / window-size change: keeps windows inside the new viewport. */
     public fun onViewportChanged() {
         _windows.entries.toList().forEach { (id, w) ->

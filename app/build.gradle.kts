@@ -46,6 +46,8 @@ android {
 
 dependencies {
     implementation(project(":system:capability-android"))
+    implementation(project(":system:desktop"))
+    implementation(project(":graphics:compositor"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

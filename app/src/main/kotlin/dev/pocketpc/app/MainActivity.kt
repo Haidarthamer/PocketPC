@@ -1,212 +1,374 @@
 package dev.pocketpc.app
 
+import android.content.Context
+import android.media.AudioManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.view.KeyEvent
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.pocketpc.system.capability.Availability
+import dev.pocketpc.app.ui.apps.DesktopServices
+import dev.pocketpc.app.ui.compositor.CompositionStats
+import dev.pocketpc.app.ui.desktop.DesktopScreen
+import dev.pocketpc.app.ui.desktop.IconPositions
+import dev.pocketpc.app.ui.desktop.TaskbarHeight
+import dev.pocketpc.app.ui.theme.PocketPcTheme
+import dev.pocketpc.desktop.apps.AppDefinition
+import dev.pocketpc.desktop.input.DesktopAction
+import dev.pocketpc.desktop.input.DesktopKey
+import dev.pocketpc.desktop.input.KeyBindings
+import dev.pocketpc.desktop.input.KeyChord
+import dev.pocketpc.desktop.input.SnapSide
+import dev.pocketpc.desktop.shell.ShellModel
+import dev.pocketpc.desktop.wm.Snapping
+import dev.pocketpc.desktop.wm.Viewport
+import dev.pocketpc.desktop.wm.WorkspaceManager
+import dev.pocketpc.graphics.GlesVerificationEngine
+import dev.pocketpc.graphics.GpuVerificationResult
 import dev.pocketpc.system.capability.CapabilityEvaluator
-import dev.pocketpc.system.capability.CapabilityReport
-import dev.pocketpc.system.capability.Feature
-import dev.pocketpc.system.capability.HardwareSnapshot
-import dev.pocketpc.system.capability.HardwareSource
+import dev.pocketpc.system.capability.PerformanceProfile
+import dev.pocketpc.system.capability.ProfileId
+import dev.pocketpc.system.capability.SystemReport
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import kotlin.concurrent.thread
 
 /**
- * Phase 1 shell.
+ * Single-activity host for the desktop.
  *
- * Deliberately not yet the desktop: Phase 1's job is to prove the app runs on hardware
- * and that device detection is honest. The desktop/window manager arrives in Phase 2.
+ * Owns the long-lived desktop state (window manager, shell, services) so window and
+ * workspace state survive recomposition and configuration changes within the process.
  */
 class MainActivity : ComponentActivity() {
+
+    private lateinit var audio: AudioManager
+    private lateinit var battery: BatteryManager
+    private lateinit var connectivity: ConnectivityManager
+    private lateinit var power: PowerManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val source = HardwareSourceFactory.create(this)
+        // Keep the display awake while a desktop session is active; a PC does not lock
+        // its screen every 30 seconds. Released automatically when the activity stops.
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        battery = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        power = getSystemService(Context.POWER_SERVICE) as PowerManager
+
+        val hardwareSource = HardwareSourceFactory.create(this)
 
         setContent {
-            MaterialTheme(colorScheme = darkColorScheme()) {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    DiagnosticsScreen(source)
+            var dark by remember { mutableStateOf(true) }
+            var animations by remember { mutableStateOf(true) }
+            var volume by remember { mutableStateOf(readVolumePercent()) }
+            var report by remember { mutableStateOf<SystemReport?>(null) }
+            var gpuResult by remember { mutableStateOf<GpuVerificationResult?>(null) }
+            var gpuRunning by remember { mutableStateOf(false) }
+            var gpuAttempted by remember { mutableStateOf(false) }
+            var profileCap by remember { mutableStateOf<ProfileId?>(null) }
+
+            val shell = remember { ShellModel() }
+            val stats = remember { CompositionStats() }
+            val iconPositions = remember { IconPositions() }
+            val configuration = LocalConfiguration.current
+            val density = LocalDensity.current
+
+            // Screen geometry in dp, minus the status bar and our taskbar.
+            val screenWidthDp = with(density) { configuration.screenWidthDp.dp }
+            val screenHeightDp = with(density) { configuration.screenHeightDp.dp }
+            val viewport = remember(configuration.screenWidthDp, configuration.screenHeightDp) {
+                Viewport(
+                    width = screenWidthDp.value,
+                    height = screenHeightDp.value,
+                    topInset = 0f,
+                    bottomInset = TaskbarHeight.value,
+                )
+            }
+            val workspaces = remember { WorkspaceManager(count = 3) { viewport } }
+
+            // Battery / clock ticker.
+            var clock by remember { mutableStateOf(LocalDateTime.now()) }
+            var batteryPercent by remember { mutableStateOf(readBatteryPercent()) }
+            var charging by remember { mutableStateOf(isCharging()) }
+            var network by remember { mutableStateOf(networkLabel()) }
+            var thermal by remember { mutableStateOf(thermalLabel()) }
+
+            LaunchedEffect(Unit) {
+                while (true) {
+                    clock = LocalDateTime.now()
+                    batteryPercent = readBatteryPercent()
+                    charging = isCharging()
+                    network = networkLabel()
+                    thermal = thermalLabel()
+                    delay(1_000)
                 }
             }
-        }
-    }
-}
 
-@Composable
-private fun DiagnosticsScreen(source: HardwareSource) {
-    var report by remember { mutableStateOf<CapabilityReport?>(null) }
-    var failure by remember { mutableStateOf<String?>(null) }
-    var probing by remember { mutableStateOf(false) }
-
-    fun runProbe() {
-        probing = true
-        failure = null
-        thread(name = "capability-probe") {
-            try {
-                val snapshot = source.snapshot()
-                val evaluated = CapabilityEvaluator.evaluate(snapshot)
-                runOnUiThreadOnMain { report = evaluated; probing = false }
-            } catch (t: Throwable) {
-                val fallback = CapabilityEvaluator.evaluate(HardwareSnapshot.unprobed("Probe failed: ${t.message}"))
-                runOnUiThreadOnMain { report = fallback; failure = t.toString(); probing = false }
-            }
-        }
-    }
-
-    if (report == null && !probing) runProbe()
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("Pocket PC", fontSize = 26.sp, fontWeight = FontWeight.SemiBold)
-        Text(
-            "Phase 1 — hardware capability report",
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(12.dp))
-
-        if (probing && report == null) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                CircularProgressIndicator(modifier = Modifier.height(20.dp))
-                Spacer(Modifier.height(8.dp))
-                Text("  Probing device…")
-            }
-            return@Column
-        }
-
-        val r = report ?: return@Column
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            item { DeviceCard(r.snapshot) }
-            item { ProfileCard(r) }
-            items(Feature.entries.toList()) { feature ->
-                FeatureCard(feature, r.features[feature] ?: Availability.Unknown("not evaluated"))
-            }
-            item {
-                Button(onClick = { probing = false; report = null; runProbe() }, modifier = Modifier.fillMaxWidth()) {
-                    Text("Re-run probe")
+            // Initial capability probe.
+            LaunchedEffect(Unit) {
+                report = withContext(Dispatchers.Default) {
+                    CapabilityEvaluator.evaluate(hardwareSource.snapshot())
                 }
             }
-            failure?.let { msg ->
-                item {
-                    Text(
-                        "Probe error: $msg",
-                        color = MaterialTheme.colorScheme.error,
-                        fontSize = 12.sp,
-                    )
-                }
+
+            val services = remember(dark, animations, volume) {
+                DesktopServices(
+                    basePath = filesDir.absolutePath,
+                    volumePercent = { volume },
+                    setVolume = { volume = it; applyVolume(it) },
+                    batteryPercent = { batteryPercent },
+                    isCharging = { charging },
+                    networkLabel = { network },
+                    thermalLabel = { thermal },
+                    memoryUsedMb = { deviceUsedMemoryMb() },
+                    memoryTotalMb = { deviceTotalMemoryMb() },
+                    cpuCores = Runtime.getRuntime().availableProcessors(),
+                    darkTheme = dark,
+                    setDarkTheme = { dark = it },
+                    animationsEnabled = animations,
+                    setAnimations = { animations = it },
+                    runGpuTest = {},
+                )
             }
-            if (r.snapshot.probeWarnings.isNotEmpty()) {
-                item {
-                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-                        Column(Modifier.padding(12.dp)) {
-                            Text("Probe warnings", fontWeight = FontWeight.Medium)
-                            r.snapshot.probeWarnings.forEach { Text("• $it", fontSize = 12.sp) }
+
+            fun launch(app: AppDefinition) {
+                val wm = workspaces.active
+                val base = wm.defaultBounds()
+                wm.open(
+                    appId = app.id,
+                    title = app.name,
+                    bounds = dev.pocketpc.desktop.wm.WindowRect(
+                        x = base.x,
+                        y = base.y,
+                        width = viewport.usableWidth * app.widthFraction,
+                        height = viewport.usableHeight * app.heightFraction,
+                    ),
+                    resizable = app.resizable,
+                    singletonPerApp = app.singleton,
+                )
+                shell.onAppLaunched(app.id)
+            }
+
+            fun runGpu() {
+                if (gpuRunning) return
+                gpuRunning = true
+                thread(name = "pocketpc-gpu-verify") {
+                    val result = GlesVerificationEngine().run()
+                    runOnUiThread {
+                        gpuResult = result
+                        gpuRunning = false
+                        gpuAttempted = true
+                        val snapshot = report?.snapshot
+                        if (snapshot != null) {
+                            report = CapabilityEvaluator.evaluateWithCompositor(
+                                snapshot,
+                                result.evidence,
+                                result.performance,
+                            )
                         }
                     }
                 }
             }
-        }
-    }
-}
 
-@Composable
-private fun DeviceCard(s: HardwareSnapshot) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text("Device", fontWeight = FontWeight.SemiBold)
-            mono("model", "${s.deviceManufacturer} ${s.deviceModel}")
-            mono("android", "API ${s.sdkInt}")
-            mono("abi", s.abi ?: "unknown")
-            mono("cpu", "${s.cpuCores} cores @ ${s.cpuMaxFreqKHz / 1000} MHz")
-            mono("ram", "${s.ramTotalMb} MiB")
-            mono("storage free", "${s.storageFreeMb} MiB")
-            mono("gpu", s.gpuRenderer ?: "not detectable")
-            mono("gl es", s.glEsVersion ?: "unknown")
-            mono("vulkan", s.vulkanApiVersion ?: (s.vulkanSupported?.toString() ?: "unprobed"))
-            mono("avf", s.avfDeclared?.toString() ?: "unprobed")
-            mono("kvm node", s.kvmPresent?.toString() ?: "unprobed")
-            mono("thermal", s.thermalStatus?.toString() ?: "unknown")
-        }
-    }
-}
-
-@Composable
-private fun ProfileCard(r: CapabilityReport) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp)) {
-            Text("Performance profile: ${r.profile.id.name}", fontWeight = FontWeight.SemiBold)
-            r.profile.reasons.forEach { Text("• $it", fontSize = 12.sp) }
-            mono("max guest ram", "${r.profile.maxGuestRamMb} MiB")
-            mono("guests allowed", r.profile.allowGuests.toString())
-        }
-    }
-}
-
-@Composable
-private fun FeatureCard(feature: Feature, availability: Availability) {
-    val (label, detail) = when (availability) {
-        is Availability.Supported -> "SUPPORTED" to availability.basis
-        is Availability.Degraded -> "LIMITED" to "${availability.basis} — ${availability.limitation}"
-        is Availability.Unsupported -> "UNSUPPORTED" to availability.reason
-        is Availability.Unknown -> "UNKNOWN" to availability.reason
-    }
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(feature.name.replace('_', ' '), fontWeight = FontWeight.Medium, fontSize = 14.sp)
-                Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            /** Applies a desktop action from either the keyboard or an on-screen control. */
+            fun perform(action: DesktopAction) {
+                val wm = workspaces.active
+                val focused = wm.focused
+                when (action) {
+                    DesktopAction.ToggleStartMenu -> shell.toggleStartMenu()
+                    DesktopAction.FocusNextWindow -> shell.nextRunningApp()?.let { app -> launch(app) }
+                    DesktopAction.FocusPreviousWindow -> shell.nextRunningApp(backwards = true)?.let { app -> launch(app) }
+                    DesktopAction.CloseFocusedWindow -> focused?.let {
+                        wm.close(it.id)
+                        shell.onAppClosed(it.appId)
+                    }
+                    DesktopAction.MinimizeFocusedWindow -> focused?.let {
+                        wm.minimize(it.id)
+                        shell.onAppMinimized(it.appId)
+                    }
+                    DesktopAction.ToggleMaximizeFocusedWindow -> focused?.let { wm.toggleMaximize(it.id) }
+                    DesktopAction.ToggleFullscreenFocusedWindow -> focused?.let {
+                        wm.setFullscreen(it.id, it.state != dev.pocketpc.desktop.wm.WindowState.FULLSCREEN)
+                    }
+                    is DesktopAction.SnapWindow -> focused?.let {
+                        wm.applyBounds(
+                            it.id,
+                            when (action.side) {
+                                SnapSide.LEFT -> dev.pocketpc.desktop.wm.WindowRect(
+                                    0f, viewport.usableTop, viewport.usableWidth / 2f, viewport.usableHeight,
+                                )
+                                SnapSide.RIGHT -> dev.pocketpc.desktop.wm.WindowRect(
+                                    viewport.usableWidth / 2f, viewport.usableTop,
+                                    viewport.usableWidth / 2f, viewport.usableHeight,
+                                )
+                            },
+                        )
+                    }
+                    DesktopAction.TileAllWindows -> dev.pocketpc.app.ui.desktop.TileLayout.tile(wm)
+                    is DesktopAction.SwitchWorkspace -> workspaces.switchTo(action.index)
+                    DesktopAction.ToggleQuickSettings -> shell.toggleQuickSettings()
+                    DesktopAction.OpenGpuDiagnostics -> dev.pocketpc.desktop.apps.AppRegistry.find("gpu")?.let { launch(it) }
+                    DesktopAction.ShowShortcutHelp -> Unit
+                }
             }
-            Text(detail, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            val notes = when (availability) {
-                is Availability.Supported -> availability.notes
-                is Availability.Degraded -> emptyList()
-                else -> emptyList()
+
+            PocketPcTheme(dark = dark) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .onKeyEvent { event ->
+                            if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+                            val chord = event.toChord() ?: return@onKeyEvent false
+                            val action = KeyBindings.resolve(chord) ?: return@onKeyEvent false
+                            perform(action)
+                            true
+                        },
+                ) {
+                    DesktopScreen(
+                        workspaces = workspaces,
+                        shell = shell,
+                        services = services.copy(runGpuTest = ::runGpu),
+                        report = report,
+                        gpuResult = gpuResult,
+                        gpuRunning = gpuRunning,
+                        stats = stats,
+                        clock = clock,
+                        batteryPercent = batteryPercent,
+                        charging = charging,
+                        networkLabel = network,
+                        thermalLabel = thermal,
+                        iconPositions = iconPositions,
+                        onRunGpuTest = ::runGpu,
+                        onLaunch = ::launch,
+                        onDismissOverlays = { shell.dismissOverlays() },
+                        onOpenGpu = { dev.pocketpc.desktop.apps.AppRegistry.find("gpu")?.let { launch(it) } },
+                        onOpenSettings = { dev.pocketpc.desktop.apps.AppRegistry.find("settings")?.let { launch(it) } },
+                    )
+                }
             }
-            notes.forEach { Text(it, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-            Text(
-                "verified: ${availability.isVerified}",
-                fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
+
+    // ---------------------------------------------------------------- Android services
+
+    private fun readVolumePercent(): Int = runCatching {
+        val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC).coerceAtLeast(1)
+        audio.getStreamVolume(AudioManager.STREAM_MUSIC) * 100 / max
+    }.getOrDefault(50)
+
+    private fun applyVolume(percent: Int) {
+        runCatching {
+            val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+            audio.setStreamVolume(AudioManager.STREAM_MUSIC, (max * percent / 100).coerceIn(0, max), 0)
+        }
+    }
+
+    private fun readBatteryPercent(): Int? = runCatching {
+        battery.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY).takeIf { it in 0..100 }
+    }.getOrNull()
+
+    private fun isCharging(): Boolean = runCatching {
+        battery.isCharging
+    }.getOrDefault(false)
+
+    private fun networkLabel(): String = runCatching {
+        val active = connectivity.activeNetwork ?: return "offline"
+        val caps = connectivity.getNetworkCapabilities(active) ?: return "offline"
+        when {
+            caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "Wi-Fi"
+            caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "Mobile data"
+            caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "Ethernet"
+            else -> "connected"
+        }
+    }.getOrDefault("unknown")
+
+    private fun thermalLabel(): String = runCatching {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return "unavailable"
+        @Suppress("DEPRECATION")
+        when (power.currentThermalStatus) {
+            PowerManager.THERMAL_STATUS_NONE -> "nominal"
+            PowerManager.THERMAL_STATUS_LIGHT -> "light"
+            PowerManager.THERMAL_STATUS_MODERATE -> "moderate"
+            PowerManager.THERMAL_STATUS_SEVERE -> "severe"
+            PowerManager.THERMAL_STATUS_CRITICAL -> "critical"
+            PowerManager.THERMAL_STATUS_EMERGENCY -> "emergency"
+            PowerManager.THERMAL_STATUS_SHUTDOWN -> "shutdown"
+            else -> "unknown"
+        }
+    }.getOrDefault("unavailable")
+
+    private fun deviceUsedMemoryMb(): Long = runCatching {
+        val info = android.app.ActivityManager.MemoryInfo()
+        (getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager).getMemoryInfo(info)
+        (info.totalMem - info.availMem) / (1024 * 1024)
+    }.getOrDefault(0L)
+
+    private fun deviceTotalMemoryMb(): Long = runCatching {
+        val info = android.app.ActivityManager.MemoryInfo()
+        (getSystemService(Context.ACTIVITY_SERVICE) as android.app.ActivityManager).getMemoryInfo(info)
+        info.totalMem / (1024 * 1024)
+    }.getOrDefault(0L)
 }
 
-@Composable
-private fun mono(key: String, value: String) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(key, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
-        Text(value, fontSize = 11.sp, fontFamily = FontFamily.Monospace)
-    }
+/** Maps an Android KeyEvent to a desktop [KeyChord], or null when unmodified. */
+private fun KeyEvent.toChord(): KeyChord? {
+    val key = when (keyCode) {
+        KeyEvent.KEYCODE_TAB -> DesktopKey.TAB
+        KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> DesktopKey.ENTER
+        KeyEvent.KEYCODE_ESCAPE -> DesktopKey.ESCAPE
+        KeyEvent.KEYCODE_SPACE -> DesktopKey.SPACE
+        KeyEvent.KEYCODE_DPAD_LEFT -> DesktopKey.LEFT
+        KeyEvent.KEYCODE_DPAD_RIGHT -> DesktopKey.RIGHT
+        KeyEvent.KEYCODE_DPAD_UP -> DesktopKey.UP
+        KeyEvent.KEYCODE_DPAD_DOWN -> DesktopKey.DOWN
+        KeyEvent.KEYCODE_W -> DesktopKey.W
+        KeyEvent.KEYCODE_Q -> DesktopKey.Q
+        KeyEvent.KEYCODE_M -> DesktopKey.M
+        KeyEvent.KEYCODE_E -> DesktopKey.E
+        KeyEvent.KEYCODE_F -> DesktopKey.F
+        KeyEvent.KEYCODE_D -> DesktopKey.D
+        KeyEvent.KEYCODE_L -> DesktopKey.L
+        KeyEvent.KEYCODE_N -> DesktopKey.N
+        KeyEvent.KEYCODE_H -> DesktopKey.H
+        KeyEvent.KEYCODE_G -> DesktopKey.G
+        KeyEvent.KEYCODE_1 -> DesktopKey.ONE
+        KeyEvent.KEYCODE_2 -> DesktopKey.TWO
+        KeyEvent.KEYCODE_3 -> DesktopKey.THREE
+        else -> null
+    } ?: return null
+    return KeyChord(
+        key = key,
+        ctrl = isCtrlPressed,
+        alt = isAltPressed,
+        shift = isShiftPressed,
+        meta = isMetaPressed,
+    )
 }
