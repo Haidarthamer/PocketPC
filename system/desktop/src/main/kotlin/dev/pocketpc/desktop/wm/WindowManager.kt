@@ -63,9 +63,11 @@ public class WindowManager(
             title = title,
             bounds = rect,
             restoreBounds = rect,
-            zIndex = nextZ++,
+            // zIndex is assigned then normalized, so indices stay a dense 0..n-1 range.
+            zIndex = nextZ,
             resizable = resizable,
         )
+        nextZ++
         _windows[id] = window
         focus(id)
         return window
@@ -85,7 +87,8 @@ public class WindowManager(
         val target = _windows[id] ?: return
         if (target.state == WindowState.MINIMIZED) restore(id)
         val current = _windows.getValue(id)
-        _windows[id] = current.copy(zIndex = nextZ++)
+        _windows[id] = current.copy(zIndex = nextZ)
+        nextZ++
         normalizeZ()
         focusedId = id
     }
@@ -187,10 +190,20 @@ public class WindowManager(
         _windows[id] = proposed
     }
 
-    /** Ends a drag, applying edge snapping. */
-    public fun endDrag(id: WindowId) {
+    /**
+     * Ends a drag and applies edge snapping.
+     *
+     * [allowSnap] defaults to true. Callers that deliberately place a window against an
+     * edge (workspace layout, tiling, programmatic placement) pass false, so a window can
+     * sit flush with the screen edge without being forced to half-screen.
+     */
+    public fun endDrag(id: WindowId, allowSnap: Boolean = true) {
         val session = drags.remove(id) ?: return
         val w = _windows[id] ?: return
+        if (!allowSnap) {
+            _windows[id] = w.copy(restoreBounds = w.bounds, snappedTo = SnapEdge.NONE)
+            return
+        }
         val edge = Snapping.edgeFor(w.bounds, viewport)
         val snapped = Snapping.snapped(w.bounds, viewport)
         if (edge != SnapEdge.TOP && edge != SnapEdge.BOTTOM && snapped != null) {
@@ -274,7 +287,8 @@ public class WindowManager(
         nextZ = 0
         saved.filter { it.appId in validAppIds }.forEach { w ->
             val rect = viewport.constrain(w.bounds)
-            _windows[w.id] = w.copy(bounds = rect, zIndex = nextZ++)
+            _windows[w.id] = w.copy(bounds = rect, zIndex = nextZ)
+            nextZ++
         }
         focusedId = visibleWindows.lastOrNull()?.id
     }

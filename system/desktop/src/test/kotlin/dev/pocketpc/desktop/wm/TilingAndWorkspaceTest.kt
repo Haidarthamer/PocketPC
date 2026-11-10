@@ -27,26 +27,37 @@ class TileLayoutTest {
         assertEquals(viewport.usableHeight, b.height, 0.01f)
     }
 
+    /**
+     * Tiled bounds are ordered by window z-order, not by `windows` (which is insertion
+     * ordered), because tiling assigns cells left-to-right as it iterates the visible
+     * z-order list. Assertions sort by position instead of relying on insertion order.
+     */
     @Test
     fun `two windows sit side by side`() {
         wm.open("files", "Files")
         wm.open("terminal", "Terminal")
         TileLayout.tile(wm)
-        val bounds = wm.windows.map { it.bounds }
+        val bounds = wm.windows.map { it.bounds }.sortedBy { it.x }
         assertEquals(2, bounds.size)
         assertEquals(viewport.usableWidth / 2f, bounds[0].width, 0.01f)
         assertEquals(bounds[0].width, bounds[1].width, 0.01f)
+        assertEquals(0f, bounds[0].x, 0.01f)
         assertTrue(bounds[1].x >= bounds[0].right - 0.01f)
+        // Both cells are full height in a 2x1 layout.
+        assertEquals(viewport.usableHeight, bounds[0].height, 0.01f)
     }
 
     @Test
     fun `four windows form a two by two grid`() {
         listOf("files", "terminal", "editor", "calculator").forEach { wm.open(it, it) }
         TileLayout.tile(wm)
-        val bounds = wm.windows.map { it.bounds }
+        val bounds = wm.windows.map { it.bounds }.sortedWith(compareBy({ it.y }, { it.x }))
+        assertEquals(4, bounds.size)
         assertEquals(viewport.usableWidth / 2f, bounds[0].width, 0.01f)
         assertEquals(viewport.usableHeight / 2f, bounds[0].height, 0.01f)
-        // Third window starts the second row.
+        // Two distinct rows.
+        assertEquals(2, bounds.map { it.y }.distinct().size)
+        // Third cell starts the second row.
         assertTrue(bounds[2].y >= bounds[0].bottom - 0.01f)
     }
 

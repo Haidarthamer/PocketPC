@@ -66,7 +66,10 @@ public object Calculator {
                         if (divisor == 0.0) throw CalcException("Division by zero")
                         value /= divisor
                     }
-                    '%' -> { i++; value %= 100.0 }
+                    // Postfix percent divides the value parsed so far by 100, so
+                    // "2500%" is 25 and "50%+5" is 5.5. Modulo would be wrong here:
+                    // this is a calculator key, not the programming operator.
+                    '%' -> { i++; value /= 100.0 }
                     else -> return value
                 }
             }

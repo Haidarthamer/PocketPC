@@ -69,7 +69,13 @@ public enum class SnapEdge { NONE, LEFT, RIGHT, TOP, BOTTOM }
  * window snaps only when the user clearly means it.
  */
 public object Snapping {
-    public const val THRESHOLD_DP: Float = 24f
+    /**
+     * Distance from an edge at which a *released* drag snaps. Kept small deliberately: a
+     * window resting near an edge must not jump to half-screen. Windows are constrained
+     * to the viewport while dragging, so a left/right drag lands at x = 0 or
+     * right = usableWidth and is caught by this threshold.
+     */
+    public const val THRESHOLD_DP: Float = 12f
 
     /** Which edge (if any) the window's rectangle is close enough to snap against. */
     public fun edgeFor(r: WindowRect, viewport: Viewport): SnapEdge = when {

@@ -145,6 +145,21 @@ jobs:
               xargs -0 -r grep -h -o '<testsuite [^>]*>' || echo "no test XML produced"
             echo '```'
             echo
+            echo "Failure details:"
+            echo '```'
+            find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
+              xargs -0 -r python3 -c '
+import sys, xml.etree.ElementTree as ET
+for path in sys.argv[1:]:
+    try: root = ET.parse(path).getroot()
+    except Exception: continue
+    for case in root.iter("testcase"):
+        for fail in list(case.iter("failure")) + list(case.iter("error")):
+            msg = (fail.get("message") or "").strip().replace("\n", " ")
+            print(f"{case.get(\"classname\")}.{case.get(\"name\")}: {msg[:300]}")
+' || echo "no failures"
+            echo '```'
+            echo
             echo "Totals:"
             echo '```'
             found=$(find . -path '*build/test-results*' -name 'TEST-*.xml' 2>/dev/null | wc -l)
