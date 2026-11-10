@@ -71,7 +71,13 @@ class CapabilityEvaluatorTest {
     fun `compositor before any run says so explicitly`() {
         val c = eval(targetDevice).of(Feature.GPU_COMPOSITOR)
         assertEquals(CapabilityState.AVAILABLE, c.state)
-        assertTrue(c.notes.any { it.contains("runtime test has not run") })
+        // The user-visible detail must state that no runtime test has happened, and the
+        // notes must say an API is not acceleration. Between them, nothing implies support.
+        assertTrue(
+            "detail should state the runtime test has not run, was: ${c.detail}",
+            c.detail.contains("runtime test has not run"),
+        )
+        assertTrue(c.notes.any { it.contains("not hardware acceleration") })
     }
 
     // ---------- compositor states from runtime evidence ----------
