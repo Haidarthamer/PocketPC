@@ -97,15 +97,18 @@ public object GpuVerifier {
     ): CapabilityEvidence {
         val software = SoftwareRendererDetector.isSoftware(renderer, vendor)
         val plausibleHw = SoftwareRendererDetector.isPlausiblyHardware(renderer, vendor)
+        // "Executed" is not the same as "we issued a call": with zero frames nothing ran,
+        // so the workload did not execute and can never be hardware-verified.
+        val reallyExecuted = commandsExecuted && frames > 0
         return CapabilityEvidence(
             detected = true,
             initialized = contextCreated,
             rendererImplemented = true,
-            executed = commandsExecuted && frames > 0,
+            executed = reallyExecuted,
             frameProduced = frameProduced,
             // Hardware-backed requires: a real context, executed work, a correct frame,
             // a plausibly hardware renderer, and no software rasteriser in the string.
-            hardwareBacked = contextCreated && commandsExecuted && frameProduced && plausibleHw && !software,
+            hardwareBacked = contextCreated && reallyExecuted && frameProduced && plausibleHw && !software,
             rendererIdentity = renderer,
             api = api,
             driverVersion = glError?.takeIf { it != 0 }?.let { "GL error 0x${Integer.toHexString(it)}" },
