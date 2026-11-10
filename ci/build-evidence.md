@@ -2,28 +2,64 @@
 
 | field | value |
 | --- | --- |
-| commit | `604f2b527931aad3aee4eb004b3f2bd2357cac49` |
-| run | [42901486961](https://github.com/Haidarthamer/PocketPC/actions/runs/42901486961) |
-| date | 2026-11-10T21:07:02Z |
+| commit | `125ab558fc9be7f26d8c099a0affc5ffabd4fc51` |
+| run | [42902339294](https://github.com/Haidarthamer/PocketPC/actions/runs/42902339294) |
+| date | 2026-11-10T21:11:59Z |
 | java | openjdk version "17.0.21" 2026-10-20 |
 | gradle | Gradle 8.11.1 |
 | result | **failure** |
 
 ## Unit tests
 ```
-<testsuite name="dev.pocketpc.graphics.GpuCapabilityIntegrationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:07:01" hostname="runnervmwuk1x" time="0.116">
-<testsuite name="dev.pocketpc.graphics.SoftwareRendererDetectorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:07:01" hostname="runnervmwuk1x" time="0.007">
-<testsuite name="dev.pocketpc.graphics.GpuVerifierTest" tests="7" skipped="0" failures="1" errors="0" timestamp="2026-11-10T21:07:01" hostname="runnervmwuk1x" time="0.03">
-<testsuite name="dev.pocketpc.system.capability.CapabilityEvaluatorTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:06:56" hostname="runnervmwuk1x" time="0.161">
+<testsuite name="dev.pocketpc.graphics.GpuCapabilityIntegrationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:57" hostname="runnervmwuk1x" time="0.102">
+<testsuite name="dev.pocketpc.graphics.SoftwareRendererDetectorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:57" hostname="runnervmwuk1x" time="0.004">
+<testsuite name="dev.pocketpc.graphics.GpuVerifierTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:57" hostname="runnervmwuk1x" time="0.009">
+<testsuite name="dev.pocketpc.desktop.shell.KeyBindingsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.007">
+<testsuite name="dev.pocketpc.desktop.shell.CalculatorTest" tests="9" skipped="0" failures="1" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.029">
+<testsuite name="dev.pocketpc.desktop.shell.ShellModelTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.005">
+<testsuite name="dev.pocketpc.desktop.shell.AppRegistryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.038">
+<testsuite name="dev.pocketpc.desktop.wm.WindowManagerTest" tests="29" skipped="0" failures="3" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.024">
+<testsuite name="dev.pocketpc.desktop.wm.WorkspaceManagerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.008">
+<testsuite name="dev.pocketpc.desktop.wm.TileLayoutTest" tests="5" skipped="0" failures="2" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.012">
+<testsuite name="dev.pocketpc.system.capability.CapabilityEvaluatorTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:51" hostname="runnervmwuk1x" time="0.166">
 ```
 
 Totals:
 ```
-4 test suites, 41 tests, 1 failures, 0 errors
+11 test suites, 111 tests, 6 failures, 0 errors
 ```
 
 ## Gradle output (tail)
 ```
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:229)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:212)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:195)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:162)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:67)
 	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:37)
 	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
 	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
@@ -109,39 +145,10 @@ Totals:
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
-	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
-	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
-	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
-	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
-	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
-	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
-	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
-	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
-	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
-	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
-	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 
 
 BUILD FAILED in 36s
-22 actionable tasks: 22 executed
+23 actionable tasks: 23 executed
 ```

@@ -2,9 +2,9 @@ Downloading https://services.gradle.org/distributions/gradle-8.11.1-bin.zip
 .............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
-> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :graphics:compositor:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :system:desktop:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :graphics:compositor:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:preBuild UP-TO-DATE
 > Task :graphics:compositor:preDebugBuild UP-TO-DATE
 > Task :system:desktop:processResources NO-SOURCE
@@ -13,8 +13,8 @@ Daemon will be stopped at the end of the build
 > Task :graphics:compositor:generateDebugResources
 > Task :graphics:compositor:packageDebugResources
 > Task :graphics:compositor:preDebugUnitTestBuild UP-TO-DATE
-> Task :graphics:compositor:javaPreCompileDebugUnitTest
 > Task :graphics:compositor:javaPreCompileDebug
+> Task :graphics:compositor:javaPreCompileDebugUnitTest
 > Task :graphics:compositor:parseDebugLocalResources
 > Task :graphics:compositor:generateDebugRFile
 > Task :graphics:compositor:generateDebugUnitTestStubRFile
@@ -30,8 +30,8 @@ Daemon will be stopped at the end of the build
 > Task :system:capability:test
 > Task :graphics:compositor:compileDebugKotlin
 > Task :graphics:compositor:compileDebugJavaWithJavac NO-SOURCE
-> Task :graphics:compositor:bundleLibRuntimeToJarDebug
 > Task :graphics:compositor:processDebugJavaRes
+> Task :graphics:compositor:bundleLibRuntimeToJarDebug
 > Task :graphics:compositor:bundleLibCompileToJarDebug
 > Task :graphics:compositor:compileDebugUnitTestKotlin
 > Task :graphics:compositor:compileDebugUnitTestJavaWithJavac NO-SOURCE
@@ -40,29 +40,45 @@ Daemon will be stopped at the end of the build
 > Task :system:desktop:compileJava NO-SOURCE
 > Task :system:desktop:classes UP-TO-DATE
 > Task :system:desktop:jar
-
+> Task :system:desktop:compileTestKotlin
+> Task :system:desktop:compileTestJava NO-SOURCE
+> Task :system:desktop:testClasses UP-TO-DATE
 > Task :graphics:compositor:testDebugUnitTest
 
-GpuVerifierTest > zero frames means nothing was executed FAILED
-    java.lang.AssertionError at GpuVerifierTest.kt:103
+> Task :system:desktop:test FAILED
 
-15 tests completed, 1 failed
+CalculatorTest > percentage divides by one hundred FAILED
+    java.lang.AssertionError at ShellAndAppsTest.kt:179
 
-> Task :graphics:compositor:testDebugUnitTest FAILED
-> Task :system:desktop:compileTestKotlin
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794344791349.json
+TileLayoutTest > two windows sit side by side FAILED
+    java.lang.AssertionError at TilingAndWorkspaceTest.kt:37
+
+TileLayoutTest > four windows form a two by two grid FAILED
+    java.lang.AssertionError at TilingAndWorkspaceTest.kt:47
+
+WindowManagerTest > focus raises the window to the top FAILED
+    java.lang.AssertionError at WindowManagerTest.kt:203
+
+WindowManagerTest > drag moves a window by the pointer delta FAILED
+    java.lang.AssertionError at WindowManagerTest.kt:67
+
+WindowManagerTest > hit test returns the topmost window at a point FAILED
+    java.lang.AssertionError at WindowManagerTest.kt:224
+
+70 tests completed, 6 failed
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794345088143.json
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':graphics:compositor:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/PocketPC/PocketPC/graphics/compositor/build/reports/tests/testDebugUnitTest/index.html
+Execution failed for task ':system:desktop:test'.
+> There were failing tests. See the report at: file:///home/runner/work/PocketPC/PocketPC/system/desktop/build/reports/tests/test/index.html
 
 * Try:
 > Run with --scan to get full insights.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':graphics:compositor:testDebugUnitTest'.
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':system:desktop:test'.
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:130)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:293)
 	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:128)
@@ -92,43 +108,13 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':graphic
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
-	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
-	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
-	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
-	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
-	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
-	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
-	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
-	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
-	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
-	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
-	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
-Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There were failing tests. See the report at: file:///home/runner/work/PocketPC/PocketPC/graphics/compositor/build/reports/tests/testDebugUnitTest/index.html
+Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There were failing tests. See the report at: file:///home/runner/work/PocketPC/PocketPC/system/desktop/build/reports/tests/test/index.html
 	at org.gradle.api.tasks.testing.AbstractTestTask.handleTestFailures(AbstractTestTask.java:707)
 	at org.gradle.api.tasks.testing.AbstractTestTask.handleCollectedResults(AbstractTestTask.java:541)
 	at org.gradle.api.tasks.testing.AbstractTestTask.executeTests(AbstractTestTask.java:536)
 	at org.gradle.api.tasks.testing.Test.executeTests(Test.java:731)
-	at com.android.build.gradle.tasks.factory.AndroidUnitTest.executeTests(AndroidUnitTest.java:171)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -252,38 +238,9 @@ Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There
 	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:303)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
-	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:138)
-	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:123)
-	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
-	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionAction.java:51)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
-	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
-	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
-	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
-	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
-	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:46)
-	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
-	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
-	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
-	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
-	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
-	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
-	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
-	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 
 
 BUILD FAILED in 36s
-22 actionable tasks: 22 executed
+23 actionable tasks: 23 executed
