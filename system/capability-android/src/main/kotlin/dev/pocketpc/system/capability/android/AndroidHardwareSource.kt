@@ -19,6 +19,11 @@ import java.io.File
  */
 class AndroidHardwareSource(private val context: Context) : HardwareSource {
 
+    companion object {
+        /** Declared by devices whose firmware supports the Android Virtualization Framework. */
+        const val FEATURE_AVF: String = "android.software.virtualization_framework"
+    }
+
     override fun snapshot(): HardwareSnapshot {
         val warnings = mutableListOf<String>()
 
@@ -39,8 +44,11 @@ class AndroidHardwareSource(private val context: Context) : HardwareSource {
 
         val vulkan = readVulkan(pm, warnings)
 
+        // Queried by its declared string rather than PackageManager.FEATURE_VIRTUALIZATION_FRAMEWORK:
+        // that constant is not present in every compileSdk/android.jar we build against, and the
+        // feature name itself is a stable, documented platform declaration.
         val avf = runCatching {
-            pm.hasSystemFeature(PackageManager.FEATURE_VIRTUALIZATION_FRAMEWORK)
+            pm.systemAvailableFeatures.any { it.name == FEATURE_AVF }
         }.onFailure { warnings += "AVF feature check failed: ${it.message}" }.getOrNull()
 
         return HardwareSnapshot(
