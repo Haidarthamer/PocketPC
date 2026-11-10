@@ -16,9 +16,16 @@ public data class WindowRect(
     public fun movedBy(dx: Float, dy: Float): WindowRect = copy(x = x + dx, y = y + dy)
 
     public companion object {
-        /** Smallest window a user may resize to; below this controls stop being tappable. */
-        public const val MIN_WIDTH: Float = 220f
-        public const val MIN_HEIGHT: Float = 160f
+        /**
+         * Smallest window a user may resize to, and the floor used when constraining.
+         *
+         * Must stay below half a typical phone width: a 412dp-wide display splits into
+         * 206dp halves, and an earlier 220dp floor made left/right snapping impossible on
+         * exactly the target device (the snap was silently clamped back to 220dp).
+         * 160dp still fits two 44dp window buttons plus a readable title.
+         */
+        public const val MIN_WIDTH: Float = 160f
+        public const val MIN_HEIGHT: Float = 120f
     }
 }
 

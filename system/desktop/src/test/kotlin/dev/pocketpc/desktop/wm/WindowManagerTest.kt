@@ -60,7 +60,9 @@ class WindowManagerTest {
 
     @Test
     fun `drag moves a window by the pointer delta`() {
-        val w = wm.open("files", "Files", bounds = WindowRect(100f, 100f, 300f, 400f))
+        // Width 200 on a 412dp-wide viewport leaves 212dp of horizontal travel, so the
+        // requested position is reachable. (A 300dp window clamps x at 112dp.)
+        val w = wm.open("files", "Files", bounds = WindowRect(100f, 100f, 200f, 200f))
         wm.beginDrag(w.id, OffsetDp(120f, 110f))
         wm.drag(w.id, OffsetDp(170f, 160f))
         val moved = wm.window(w.id)!!

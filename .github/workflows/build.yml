@@ -173,7 +173,7 @@ jobs:
             echo
             echo "Totals:"
             echo '```'
-            python3 scripts/ci/totals.py 2>/dev/null || echo "totals unavailable"
+            python3 scripts/ci/totals.py 2>/dev/null || true  # exits 1 on failures; the test step already failed the run
             echo '```'
             echo
             echo "## Gradle output (tail)"

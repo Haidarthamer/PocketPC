@@ -24,13 +24,21 @@ public class WindowManager(
 
     public val viewport: Viewport get() = viewportProvider()
 
-    /** Windows in z-order, bottom first. Includes minimised windows. */
+    /**
+     * Windows in z-order, bottom first. Includes minimised windows.
+     *
+     * Sorted by [DesktopWindow.zIndex] rather than relying on the backing map's insertion
+     * order: focus/minimise/restore all reorder z-indices, and the compositor and hit
+     * testing must agree with the model. (This was a real bug: the property was
+     * documented as z-ordered but returned insertion order, so focus-to-top and hit
+     * testing disagreed after the first refocus.)
+     */
     public val windows: List<DesktopWindow>
-        get() = _windows.values.toList()
+        get() = _windows.values.sortedBy { it.zIndex }
 
     /** Windows the compositor should draw, bottom first. */
     public val visibleWindows: List<DesktopWindow>
-        get() = _windows.values.filter { it.isVisible }
+        get() = windows.filter { it.isVisible }
 
     public val focused: DesktopWindow?
         get() = focusedId?.let { _windows[it] }
