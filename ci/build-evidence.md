@@ -2,31 +2,44 @@
 
 | field | value |
 | --- | --- |
-| commit | `125ab558fc9be7f26d8c099a0affc5ffabd4fc51` |
-| run | [42902339294](https://github.com/Haidarthamer/PocketPC/actions/runs/42902339294) |
-| date | 2026-11-10T21:11:59Z |
+| commit | `2425b075de571f3630f21fab0cea4c50bf359ee0` |
+| run | [42904236643](https://github.com/Haidarthamer/PocketPC/actions/runs/42904236643) |
+| date | 2026-11-10T21:23:44Z |
 | java | openjdk version "17.0.21" 2026-10-20 |
 | gradle | Gradle 8.11.1 |
 | result | **failure** |
 
 ## Unit tests
 ```
-<testsuite name="dev.pocketpc.graphics.GpuCapabilityIntegrationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:57" hostname="runnervmwuk1x" time="0.102">
-<testsuite name="dev.pocketpc.graphics.SoftwareRendererDetectorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:57" hostname="runnervmwuk1x" time="0.004">
-<testsuite name="dev.pocketpc.graphics.GpuVerifierTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:57" hostname="runnervmwuk1x" time="0.009">
-<testsuite name="dev.pocketpc.desktop.shell.KeyBindingsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.007">
-<testsuite name="dev.pocketpc.desktop.shell.CalculatorTest" tests="9" skipped="0" failures="1" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.029">
-<testsuite name="dev.pocketpc.desktop.shell.ShellModelTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.005">
-<testsuite name="dev.pocketpc.desktop.shell.AppRegistryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.038">
-<testsuite name="dev.pocketpc.desktop.wm.WindowManagerTest" tests="29" skipped="0" failures="3" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.024">
-<testsuite name="dev.pocketpc.desktop.wm.WorkspaceManagerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.008">
-<testsuite name="dev.pocketpc.desktop.wm.TileLayoutTest" tests="5" skipped="0" failures="2" errors="0" timestamp="2026-11-10T21:11:58" hostname="runnervmwuk1x" time="0.012">
-<testsuite name="dev.pocketpc.system.capability.CapabilityEvaluatorTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:11:51" hostname="runnervmwuk1x" time="0.166">
+<testsuite name="dev.pocketpc.graphics.GpuCapabilityIntegrationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:42" hostname="runnervmwuk1x" time="0.091">
+<testsuite name="dev.pocketpc.graphics.SoftwareRendererDetectorTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:42" hostname="runnervmwuk1x" time="0.006">
+<testsuite name="dev.pocketpc.graphics.GpuVerifierTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:42" hostname="runnervmwuk1x" time="0.01">
+<testsuite name="dev.pocketpc.desktop.shell.KeyBindingsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.007">
+<testsuite name="dev.pocketpc.desktop.shell.CalculatorTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.022">
+<testsuite name="dev.pocketpc.desktop.shell.ShellModelTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.005">
+<testsuite name="dev.pocketpc.desktop.wm.PlacementSnapTest" tests="6" skipped="0" failures="2" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.016">
+<testsuite name="dev.pocketpc.desktop.shell.AppRegistryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.03">
+<testsuite name="dev.pocketpc.desktop.wm.WindowManagerTest" tests="29" skipped="0" failures="3" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.013">
+<testsuite name="dev.pocketpc.desktop.wm.WorkspaceManagerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.004">
+<testsuite name="dev.pocketpc.desktop.wm.TileLayoutTest" tests="5" skipped="0" failures="2" errors="0" timestamp="2026-11-10T21:23:43" hostname="runnervmwuk1x" time="0.005">
+<testsuite name="dev.pocketpc.system.capability.CapabilityEvaluatorTest" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-10T21:23:37" hostname="runnervmwuk1x" time="0.171">
+```
+
+Failure details:
+```
+dev.pocketpc.desktop.wm.PlacementSnapTest.a window in the middle of the screen does not snap: java.lang.AssertionError: expected:<200.0> but was:<206.0>
+dev.pocketpc.desktop.wm.PlacementSnapTest.applyBounds to a half-screen cell keeps exact geometry: java.lang.AssertionError: expected:<206.0> but was:<220.0>
+dev.pocketpc.desktop.wm.WindowManagerTest.focus raises the window to the top: java.lang.AssertionError: expected:<WindowId(value=files#0067881559)> but was:<WindowId(value=terminal#113178362524)>
+dev.pocketpc.desktop.wm.WindowManagerTest.drag moves a window by the pointer delta: java.lang.AssertionError: expected:<150.0> but was:<112.0>
+dev.pocketpc.desktop.wm.WindowManagerTest.hit test returns the topmost window at a point: java.lang.AssertionError: expected:<WindowId(value=files#0067881559)> but was:<WindowId(value=terminal#113178362524)>
+dev.pocketpc.desktop.wm.TileLayoutTest.two windows sit side by side: java.lang.AssertionError: expected:<206.0> but was:<220.0>
+dev.pocketpc.desktop.wm.TileLayoutTest.four windows form a two by two grid: java.lang.AssertionError: expected:<206.0> but was:<220.0>
 ```
 
 Totals:
 ```
-11 test suites, 111 tests, 6 failures, 0 errors
+12 test suites, 117 tests, 7 failures, 0 errors, 0 skipped
+totals unavailable
 ```
 
 ## Gradle output (tail)

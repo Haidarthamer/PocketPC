@@ -1,10 +1,12 @@
+workflow OK: 14 steps
+referenced scripts present
 Downloading https://services.gradle.org/distributions/gradle-8.11.1-bin.zip
 .............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
 Daemon will be stopped at the end of the build 
+> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :system:desktop:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :graphics:compositor:preBuild UP-TO-DATE
 > Task :graphics:compositor:preDebugBuild UP-TO-DATE
 > Task :system:desktop:processResources NO-SOURCE
@@ -40,21 +42,24 @@ Daemon will be stopped at the end of the build
 > Task :system:desktop:compileJava NO-SOURCE
 > Task :system:desktop:classes UP-TO-DATE
 > Task :system:desktop:jar
+> Task :graphics:compositor:testDebugUnitTest
 > Task :system:desktop:compileTestKotlin
 > Task :system:desktop:compileTestJava NO-SOURCE
 > Task :system:desktop:testClasses UP-TO-DATE
-> Task :graphics:compositor:testDebugUnitTest
 
 > Task :system:desktop:test FAILED
 
-CalculatorTest > percentage divides by one hundred FAILED
-    java.lang.AssertionError at ShellAndAppsTest.kt:179
+PlacementSnapTest > a window in the middle of the screen does not snap FAILED
+    java.lang.AssertionError at PlacementSnapTest.kt:68
+
+PlacementSnapTest > applyBounds to a half-screen cell keeps exact geometry FAILED
+    java.lang.AssertionError at PlacementSnapTest.kt:32
 
 TileLayoutTest > two windows sit side by side FAILED
-    java.lang.AssertionError at TilingAndWorkspaceTest.kt:37
+    java.lang.AssertionError at TilingAndWorkspaceTest.kt:42
 
 TileLayoutTest > four windows form a two by two grid FAILED
-    java.lang.AssertionError at TilingAndWorkspaceTest.kt:47
+    java.lang.AssertionError at TilingAndWorkspaceTest.kt:56
 
 WindowManagerTest > focus raises the window to the top FAILED
     java.lang.AssertionError at WindowManagerTest.kt:203
@@ -65,8 +70,8 @@ WindowManagerTest > drag moves a window by the pointer delta FAILED
 WindowManagerTest > hit test returns the topmost window at a point FAILED
     java.lang.AssertionError at WindowManagerTest.kt:224
 
-70 tests completed, 6 failed
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794345088143.json
+76 tests completed, 7 failed
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_5-1794345793420.json
 
 FAILURE: Build failed with an exception.
 
