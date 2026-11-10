@@ -990,3 +990,139 @@ application-label-da:'Pocket PC'
 application-label-de:'Pocket PC'
 application-label-el:'Pocket PC'
 application-label-en-AU:'Pocket PC'
+Downloading https://services.gradle.org/distributions/gradle-8.11.1-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:capability:processResources NO-SOURCE
+> Task :system:capability:processTestResources NO-SOURCE
+> Task :system:capability:compileKotlin
+> Task :system:capability:compileJava NO-SOURCE
+> Task :system:capability:classes UP-TO-DATE
+> Task :system:capability:jar
+> Task :system:capability:compileTestKotlin
+> Task :system:capability:compileTestJava NO-SOURCE
+> Task :system:capability:testClasses UP-TO-DATE
+> Task :system:capability:test
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_3-1794340517276.json
+
+BUILD SUCCESSFUL in 25s
+4 actionable tasks: 4 executed
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :system:capability:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:capability-android:preBuild UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :system:capability-android:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateDebugResValues
+> Task :system:capability-android:generateDebugResValues
+> Task :system:capability-android:writeDebugAarMetadata
+> Task :system:capability-android:generateDebugResources
+> Task :app:generateDebugResources
+> Task :system:capability:compileKotlin UP-TO-DATE
+> Task :system:capability:compileJava NO-SOURCE
+> Task :system:capability:processResources NO-SOURCE
+> Task :system:capability:classes UP-TO-DATE
+> Task :system:capability:jar UP-TO-DATE
+> Task :system:capability-android:packageDebugResources
+> Task :system:capability-android:extractDeepLinksDebug
+> Task :system:capability-android:processDebugManifest
+> Task :system:capability-android:compileDebugLibraryResources
+> Task :system:capability-android:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :system:capability-android:javaPreCompileDebug
+> Task :system:capability-android:mergeDebugShaders
+> Task :system:capability-android:compileDebugShaders NO-SOURCE
+> Task :system:capability-android:generateDebugAssets UP-TO-DATE
+> Task :system:capability-android:packageDebugAssets
+> Task :system:capability-android:mergeDebugJniLibFolders
+> Task :system:capability-android:mergeDebugNativeLibs NO-SOURCE
+> Task :system:capability-android:copyDebugJniLibsProjectOnly
+> Task :system:capability-android:parseDebugLocalResources
+> Task :system:capability-android:generateDebugRFile
+
+> Task :system:capability-android:compileDebugKotlin
+w: file:///home/runner/work/PocketPC/PocketPC/system/capability-android/src/main/kotlin/dev/pocketpc/system/capability/android/AndroidHardwareSource.kt:55:63 'static field CPU_ABI: String!' is deprecated. Deprecated in Java.
+
+> Task :system:capability-android:compileDebugJavaWithJavac NO-SOURCE
+> Task :system:capability-android:bundleLibRuntimeToJarDebug
+> Task :system:capability-android:bundleLibCompileToJarDebug
+> Task :system:capability-android:processDebugJavaRes
+> Task :system:capability-android:bundleLibRuntimeToDirDebug
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:parseDebugLocalResources
+> Task :app:extractDeepLinksDebug FROM-CACHE
+> Task :app:mergeDebugResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:javaPreCompileDebug FROM-CACHE
+> Task :app:processDebugManifestForPackage
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:processDebugResources
+> Task :app:checkDebugDuplicateClasses
+> Task :app:compileDebugKotlin
+> Task :app:mergeExtDexDebug
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:processDebugJavaRes
+> Task :app:mergeLibDexDebug
+> Task :app:mergeDebugJniLibFolders
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so.
+
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_4-1794340540584.json
+
+BUILD SUCCESSFUL in 1m 18s
+56 actionable tasks: 52 executed, 2 from cache, 2 up-to-date
+## APK
+path: /home/runner/work/PocketPC/PocketPC/app/build/outputs/apk/debug/app-debug.apk
+-rw-r--r-- 1 runner runner 9485534 Nov 10 19:56 /home/runner/work/PocketPC/PocketPC/app/build/outputs/apk/debug/app-debug.apk
+sha256: 51d6dcf272788ff041ca8de1556a790f090def7ad7f5f5928f5276d04ef22693
+package: name='dev.pocketpc.app' versionCode='1' versionName='0.1.0-phase1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'
+minSdkVersion:'26'
+targetSdkVersion:'35'
+uses-permission: name='dev.pocketpc.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+application-label:'Pocket PC'
+application-label-af:'Pocket PC'
+application-label-am:'Pocket PC'
+application-label-ar:'Pocket PC'
+application-label-as:'Pocket PC'
+application-label-az:'Pocket PC'
+application-label-be:'Pocket PC'
+application-label-bg:'Pocket PC'
+application-label-bn:'Pocket PC'
+application-label-bs:'Pocket PC'
+application-label-ca:'Pocket PC'
+application-label-cs:'Pocket PC'
+application-label-da:'Pocket PC'
+application-label-de:'Pocket PC'
+application-label-el:'Pocket PC'
+application-label-en-AU:'Pocket PC'
+
+## Downloadable artifact
+name: PocketPC-debug-apk
+file: app-debug.apk
+bytes: 9485534
+download: https://github.com/Haidarthamer/PocketPC/actions/runs/42889814566/artifacts
