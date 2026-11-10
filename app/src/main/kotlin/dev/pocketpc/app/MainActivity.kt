@@ -21,9 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalConfiguration
@@ -231,7 +228,7 @@ class MainActivity : ComponentActivity() {
                             },
                         )
                     }
-                    DesktopAction.TileAllWindows -> dev.pocketpc.app.ui.desktop.TileLayout.tile(wm)
+                    DesktopAction.TileAllWindows -> dev.pocketpc.desktop.wm.TileLayout.tile(wm)
                     is DesktopAction.SwitchWorkspace -> workspaces.switchTo(action.index)
                     DesktopAction.ToggleQuickSettings -> shell.toggleQuickSettings()
                     DesktopAction.OpenGpuDiagnostics -> dev.pocketpc.desktop.apps.AppRegistry.find("gpu")?.let { launch(it) }
@@ -247,7 +244,7 @@ class MainActivity : ComponentActivity() {
                             // androidx.compose.ui.input.key.type is the extension property;
                             // KeyEvent.type would resolve to the platform field.
                             if (event.nativeKeyEvent.action != KeyEvent.ACTION_DOWN) return@onKeyEvent false
-                            val chord = event.toChord() ?: return@onKeyEvent false
+                            val chord = event.nativeKeyEvent.toChord() ?: return@onKeyEvent false
                             val action = KeyBindings.resolve(chord) ?: return@onKeyEvent false
                             perform(action)
                             true

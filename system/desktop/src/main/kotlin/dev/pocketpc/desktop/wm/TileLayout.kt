@@ -1,7 +1,4 @@
-package dev.pocketpc.app.ui.desktop
-
-import dev.pocketpc.desktop.wm.WindowManager
-import dev.pocketpc.desktop.wm.WindowRect
+package dev.pocketpc.desktop.wm
 
 /**
  * Tiling layout for open windows.

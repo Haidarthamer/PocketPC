@@ -234,7 +234,7 @@ fun DesktopScreen(
                 canPaste = false,
                 onOpenTerminal = { AppRegistry.find("terminal")?.let(onLaunch) },
                 onOpenFiles = { AppRegistry.find("files")?.let(onLaunch) },
-                onTileWindows = { TileLayout.tile(wm) },
+                onTileWindows = { dev.pocketpc.desktop.wm.TileLayout.tile(wm) },
                 onToggleWallpaperAnimation = { services.setAnimations(!services.animationsEnabled) },
                 onShowShortcuts = { showShortcuts = true },
                 onOpenSettings = onOpenSettings,
