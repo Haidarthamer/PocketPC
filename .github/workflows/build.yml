@@ -58,10 +58,17 @@ jobs:
         run: gradle wrapper --gradle-version 8.11.1 --distribution-type bin && chmod +x gradlew
 
       # Each step tees into ci/build.log so failures are readable later.
-      - name: Unit tests (capability logic)
+      # Every pure-Kotlin module is tested. Listed explicitly rather than with a
+      # wildcard so adding a module without tests is a visible decision, and so a new
+      # module cannot silently go untested (which happened once: the desktop module's
+      # tests existed but this step only ran :system:capability:test).
+      - name: Unit tests (capability, desktop, GPU verdicts)
         run: |
           set -o pipefail
-          ./gradlew --no-daemon --console=plain --stacktrace :system:capability:test 2>&1 | tee -a ci/build.log
+          ./gradlew --no-daemon --console=plain --stacktrace \
+            :system:capability:test \
+            :system:desktop:test \
+            :graphics:compositor:testDebugUnitTest 2>&1 | tee -a ci/build.log
 
       - name: Assemble debug APK
         run: |
@@ -136,6 +143,18 @@ jobs:
             echo '```'
             find . -path '*build/test-results*' -name '*.xml' -print0 2>/dev/null |
               xargs -0 -r grep -h -o '<testsuite [^>]*>' || echo "no test XML produced"
+            echo '```'
+            echo
+            echo "Totals:"
+            echo '```'
+            found=$(find . -path '*build/test-results*' -name 'TEST-*.xml' 2>/dev/null | wc -l)
+            tests=$(find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
+              xargs -0 -r grep -h -o 'tests="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc 2>/dev/null || echo 0)
+            fails=$(find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
+              xargs -0 -r grep -h -o 'failures="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc 2>/dev/null || echo 0)
+            errs=$(find . -path '*build/test-results*' -name 'TEST-*.xml' -print0 2>/dev/null |
+              xargs -0 -r grep -h -o 'errors="[0-9]*"' | grep -o '[0-9]*' | paste -sd+ - | bc 2>/dev/null || echo 0)
+            echo "$found test suites, $tests tests, $fails failures, $errs errors"
             echo '```'
             echo
             echo "## Gradle output (tail)"
