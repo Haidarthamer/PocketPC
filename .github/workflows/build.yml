@@ -1,9 +1,10 @@
 name: build
 
-# Evidence loop: this workflow is the authoritative compiler. The development
-# sandbox has no Android SDK and cannot reach Maven Central, so every claim in
-# docs/ must be backed by a green run here. Results are committed back to the
-# repository under ci/ so they can be read without the Azure log hosts.
+# Authoritative compiler + test runner for this project.
+# The development sandbox has no Android SDK and cannot reach Maven Central, so
+# every engineering claim must be backed by a green run here. Output is committed
+# back under ci/ because the Azure-hosted workflow log hosts are unreachable from
+# the sandbox.
 on:
   push:
     branches: ['arena/**', main]
@@ -24,69 +25,89 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
+    env:
+      GRADLE_OPTS: -Dorg.gradle.console=plain
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '17'
 
       - name: Install Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.11.1'
 
-      - name: Generate wrapper (so the repo is buildable locally)
-        run: gradle wrapper --gradle-version 8.11.1 --distribution-type bin
+      - name: Ensure Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" >/dev/null
 
-      - name: Unit tests (pure capability logic)
-        run: gradle --no-daemon --stacktrace :system:capability:test
+      - name: Generate wrapper
+        run: gradle wrapper --gradle-version 8.11.1 --distribution-type bin && chmod +x gradlew
+
+      # Each step tees into ci/build.log so failures are readable later.
+      - name: Unit tests (capability logic)
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --console=plain --stacktrace :system:capability:test 2>&1 | tee -a ci/build.log
 
       - name: Assemble debug APK
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon --console=plain --stacktrace :app:assembleDebug 2>&1 | tee -a ci/build.log
 
       - name: Inspect APK
         run: |
+          set -o pipefail
           APK=$(find app/build/outputs/apk/debug -name '*.apk' | head -1)
-          echo "APK=$APK"
-          ls -l "$APK"
-          "$ANDROID_HOME"/build-tools/*/aapt2 version || true
+          {
+            echo "## APK"
+            ls -l "$APK"
+            "$ANDROID_HOME"/build-tools/35.0.0/aapt2 dump badging "$APK" 2>/dev/null | head -20
+          } | tee -a ci/build.log
 
-      - name: Collect evidence
+      - name: Assemble evidence
         if: always()
         run: |
           mkdir -p ci
           {
             echo "# Build evidence"
-            echo "commit: ${GITHUB_SHA}"
-            echo "run:    ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-            echo "date:   $(date -u +%FT%TZ)"
-            echo "java:   $(java -version 2>&1 | head -1)"
-            echo "gradle: $(gradle --version 2>/dev/null | grep -E '^Gradle' || true)"
             echo
-            echo "## Unit test results"
-            find system -path '*test-results*' -name '*.xml' -print0 2>/dev/null |
-              xargs -0 -r grep -h -o '<testsuite[^>]*>' || echo "no test XML found"
+            echo "| field | value |"
+            echo "| --- | --- |"
+            echo "| commit | \`${GITHUB_SHA}\` |"
+            echo "| run | [$GITHUB_RUN_ID](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) |"
+            echo "| date | $(date -u +%FT%TZ) |"
+            echo "| java | $(java -version 2>&1 | head -1) |"
+            echo "| gradle | $(gradle --version 2>/dev/null | grep -E '^Gradle' || echo unknown) |"
+            echo "| result | **${{ job.status }}** |"
             echo
-            echo "## APK"
-            find app/build/outputs -name '*.apk' -exec ls -l {} \; 2>/dev/null || echo "no APK"
+            echo "## Unit tests"
+            echo '```'
+            find . -path '*build/test-results*' -name '*.xml' -print0 2>/dev/null |
+              xargs -0 -r grep -h -o '<testsuite [^>]*>' || echo "no test XML produced"
+            echo '```'
             echo
-            echo "## Result"
-            echo "job status: ${{ job.status }}"
+            echo "## Gradle output (tail)"
+            echo '```'
+            tail -n 120 ci/build.log 2>/dev/null || echo "no log"
+            echo '```'
           } > ci/build-evidence.md
           cat ci/build-evidence.md
 
-      - name: Commit evidence and wrapper back to the branch
+      - name: Commit evidence + wrapper
         if: always() && github.event_name == 'push'
         run: |
           git config user.name  "pocketpc-ci[bot]"
           git config user.email "pocketpc-ci@users.noreply.github.com"
-          git add ci/build-evidence.md gradle/wrapper gradlew gradlew.bat
+          git add -f ci/build-evidence.md ci/build.log gradle/wrapper gradlew gradlew.bat 2>/dev/null || true
           if git diff --cached --quiet; then echo "nothing to record"; exit 0; fi
           git commit -m "ci(evidence): build ${{ job.status }} for ${GITHUB_SHA:0:7}"
           git push
