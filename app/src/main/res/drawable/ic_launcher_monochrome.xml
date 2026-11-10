@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Themed-icon (monochrome) layer. Android tints this single-colour silhouette; it
+  must therefore be drawn as filled shapes only, with no colour that carries meaning.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- pocket shell outline -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M26,21 h56 a8,8 0 0 1 8,8 v50 a8,8 0 0 1 -8,8 h-56 a8,8 0 0 1 -8,-8 v-50 a8,8 0 0 1 8,-8 z
+                          M26,25 a4,4 0 0 0 -4,4 v50 a4,4 0 0 0 4,4 h56 a4,4 0 0 0 4,-4 v-50 a4,4 0 0 0 -4,-4 z" />
+
+    <!-- top pane -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,31 h50 a1.6,1.6 0 0 1 1.6,1.6 v20 a1.6,1.6 0 0 1 -1.6,1.6 h-50 a1.6,1.6 0 0 1 -1.6,-1.6 v-20 a1.6,1.6 0 0 1 1.6,-1.6 z" />
+
+    <!-- taskbar strip -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,58 h54 a2.6,2.6 0 0 1 0,5.2 h-54 a2.6,2.6 0 0 1 0,-5.2 z" />
+
+    <!-- two lower shortcut dots -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,68.5 m-3.2,0 a3.2,3.2 0 1,0 6.4,0 a3.2,3.2 0 1,0 -6.4,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M47,68.5 m-3.2,0 a3.2,3.2 0 1,0 6.4,0 a3.2,3.2 0 1,0 -6.4,0" />
+</vector>

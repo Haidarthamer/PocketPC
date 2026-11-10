@@ -22,4 +22,5 @@ rootProject.name = "PocketPC"
 
 include(":system:capability")
 include(":system:capability-android")
+include(":system:desktop")
 include(":app")

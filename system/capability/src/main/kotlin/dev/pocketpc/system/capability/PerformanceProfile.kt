@@ -1,23 +1,21 @@
 package dev.pocketpc.system.capability
 
 /**
- * Dynamic performance profiles. The profile is *derived* from the device, not chosen
- * by the user alone: a device that cannot sustain the work must not be offered it.
- * User intent (an explicit preference) may only move the profile downward, never
- * above what the hardware evidence supports.
+ * Performance profiles. The profile is *derived* from the device, not chosen by the
+ * user alone: a device that cannot sustain the work must not be offered it. User intent
+ * may only move the profile downward, never above what hardware evidence supports.
  */
 public enum class ProfileId {
-    /** Minimum background work, no VMs, reduced animation, aggressive idle. */
+    /** Minimum background work, no guests, reduced animation, aggressive idle. */
     BATTERY_SAVER,
 
     /** Default desktop experience with guarding. */
     BALANCED,
 
-    /** Maximum responsiveness; only offered on devices with real headroom. */
+    /** Maximum responsiveness; only offered with real headroom. */
     PERFORMANCE,
     ;
 
-    /** Numeric ordering used when applying user caps. */
     public val rank: Int get() = ordinal
 }
 
@@ -80,4 +78,28 @@ public data class PerformanceProfile(
             )
         }
     }
+}
+
+/** Explicit, documented resource policy. Thresholds are product policy, not device facts. */
+public object CapabilityPolicy {
+    /** Below this, the desktop is offered but guarded (fewer cached views, no VM). */
+    public const val MIN_RAM_MB_FOR_DESKTOP: Long = 2_048L
+
+    /** Comfortable threshold for multi-app desktop use. */
+    public const val COMFORTABLE_RAM_MB: Long = 6_144L
+
+    /** QEMU guests get RAM grants; require headroom before allowing one. */
+    public const val MIN_RAM_MB_FOR_QEMU: Long = 4_096L
+
+    /** PRoot needs a writable rootfs; refuse well before the disk is full. */
+    public const val MIN_FREE_MB_FOR_ROOTFS: Long = 4_096L
+
+    /** Android 8.0. Below this no supported target exists at all. */
+    public const val MIN_SDK: Int = 26
+
+    /** Android 14: AVF present in shipping devices and process-level limits are tighter. */
+    public const val SDK_AVF_FLOOR: Int = 34
+
+    /** Thermal status at which we stop starting new heavy work (PowerManager.THERMAL_STATUS_SEVERE). */
+    public const val THERMAL_SEVERE: Int = 4
 }

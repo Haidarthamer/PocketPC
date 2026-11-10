@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Pocket PC brand palette. Keep in sync with ui/theme/Brand.kt -->
+    <color name="pocketpc_brand_navy">#0E1A30</color>
+    <color name="pocketpc_brand_navy_deep">#0A101E</color>
+    <color name="pocketpc_brand_blue">#6AC4FF</color>
+    <color name="pocketpc_brand_blue_deep">#409CE8</color>
+    <color name="pocketpc_brand_amber">#FFB054</color>
+    <color name="pocketpc_icon_background">#0E1A30</color>
+</resources>
