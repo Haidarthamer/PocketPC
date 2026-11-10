@@ -1,0 +1,92 @@
+name: build
+
+# Evidence loop: this workflow is the authoritative compiler. The development
+# sandbox has no Android SDK and cannot reach Maven Central, so every claim in
+# docs/ must be backed by a green run here. Results are committed back to the
+# repository under ci/ so they can be read without the Azure log hosts.
+on:
+  push:
+    branches: ['arena/**', main]
+    paths-ignore:
+      - 'ci/**'
+      - 'docs/**'
+      - '**/*.md'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Generate wrapper (so the repo is buildable locally)
+        run: gradle wrapper --gradle-version 8.11.1 --distribution-type bin
+
+      - name: Unit tests (pure capability logic)
+        run: gradle --no-daemon --stacktrace :system:capability:test
+
+      - name: Assemble debug APK
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
+
+      - name: Inspect APK
+        run: |
+          APK=$(find app/build/outputs/apk/debug -name '*.apk' | head -1)
+          echo "APK=$APK"
+          ls -l "$APK"
+          "$ANDROID_HOME"/build-tools/*/aapt2 version || true
+
+      - name: Collect evidence
+        if: always()
+        run: |
+          mkdir -p ci
+          {
+            echo "# Build evidence"
+            echo "commit: ${GITHUB_SHA}"
+            echo "run:    ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "date:   $(date -u +%FT%TZ)"
+            echo "java:   $(java -version 2>&1 | head -1)"
+            echo "gradle: $(gradle --version 2>/dev/null | grep -E '^Gradle' || true)"
+            echo
+            echo "## Unit test results"
+            find system -path '*test-results*' -name '*.xml' -print0 2>/dev/null |
+              xargs -0 -r grep -h -o '<testsuite[^>]*>' || echo "no test XML found"
+            echo
+            echo "## APK"
+            find app/build/outputs -name '*.apk' -exec ls -l {} \; 2>/dev/null || echo "no APK"
+            echo
+            echo "## Result"
+            echo "job status: ${{ job.status }}"
+          } > ci/build-evidence.md
+          cat ci/build-evidence.md
+
+      - name: Commit evidence and wrapper back to the branch
+        if: always() && github.event_name == 'push'
+        run: |
+          git config user.name  "pocketpc-ci[bot]"
+          git config user.email "pocketpc-ci@users.noreply.github.com"
+          git add ci/build-evidence.md gradle/wrapper gradlew gradlew.bat
+          if git diff --cached --quiet; then echo "nothing to record"; exit 0; fi
+          git commit -m "ci(evidence): build ${{ job.status }} for ${GITHUB_SHA:0:7}"
+          git push
