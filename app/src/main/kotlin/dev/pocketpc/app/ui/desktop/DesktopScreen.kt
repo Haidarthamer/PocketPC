@@ -267,11 +267,10 @@ fun DesktopScreen(
  * Detects a tap on the desktop background. Kept as a small helper so the desktop file
  * reads declaratively.
  */
-private fun desktopTapModifier(onTap: () -> Unit): Modifier = Modifier.then(
-    androidx.compose.ui.input.pointer.pointerInput(Unit) {
+private fun desktopTapModifier(onTap: () -> Unit): Modifier =
+    Modifier.pointerInput(Unit) {
         detectTapGestures(onTap = { onTap() })
-    },
-)
+    }
 
 @Composable
 private fun ShortcutSheet(dark: Boolean, onDismiss: () -> Unit) {

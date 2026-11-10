@@ -83,7 +83,7 @@ fun AppHost(
 }
 
 /** Services the apps need. Supplied by the activity so apps stay Android-light. */
-class DesktopServices(
+data class DesktopServices(
     val basePath: String,
     val volumePercent: () -> Int,
     val setVolume: (Int) -> Unit,
