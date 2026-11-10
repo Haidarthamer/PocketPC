@@ -43,6 +43,7 @@ public enum class DesktopKey(public val label: String) {
     L("L"),
     N("N"),
     H("H"),
+    G("G"),
     ONE("1"),
     TWO("2"),
     THREE("3"),

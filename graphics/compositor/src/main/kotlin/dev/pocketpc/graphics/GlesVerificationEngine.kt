@@ -43,6 +43,9 @@ public class GlesVerificationEngine(
         public const val DEFAULT_TIMED_FRAMES: Int = 120
     }
 
+    private val VERTEX_SHADER: String = Shaders.VERTEX_SHADER
+    private val FRAGMENT_SHADER: String = Shaders.FRAGMENT_SHADER
+
     public fun run(timedFrames: Int = DEFAULT_TIMED_FRAMES): GpuVerificationResult {
         var display: EGLDisplay? = null
         var context: EGLContext? = null
@@ -98,13 +101,13 @@ public class GlesVerificationEngine(
                 return fail("shader program failed to link (GL error 0x${Integer.toHexString(glError ?: 0)})")
             }
             val buffer = FloatBuffer.allocate(12)
-            // Full-screen quad in clip space.
-            -1f.let { buffer.put(it) }; -1f.let { buffer.put(it) }
-            1f.let { buffer.put(it) }; -1f.let { buffer.put(it) }
-            -1f.let { buffer.put(it) }; 1f.let { buffer.put(it) }
-            1f.let { buffer.put(it) }; -1f.let { buffer.put(it) }
-            -1f.let { buffer.put(it) }; 1f.let { buffer.put(it) }
-            1f.let { buffer.put(it) }; 1f.let { buffer.put(it) }
+            // Full-screen quad as two triangles in clip space.
+            buffer.put(-1f); buffer.put(-1f)
+            buffer.put(1f); buffer.put(-1f)
+            buffer.put(-1f); buffer.put(1f)
+            buffer.put(1f); buffer.put(-1f)
+            buffer.put(-1f); buffer.put(1f)
+            buffer.put(1f); buffer.put(1f)
             buffer.position(0)
 
             val vbo = IntArray(1)
@@ -289,7 +292,7 @@ public class GlesVerificationEngine(
             .takeIf { it.isNotEmpty() }
     }
 
-    private companion object Shaders {
+    private object Shaders {
         val VERTEX_SHADER = """
             attribute vec2 aPos;
             void main() {
