@@ -63,14 +63,52 @@ jobs:
           set -o pipefail
           ./gradlew --no-daemon --console=plain --stacktrace :app:assembleDebug 2>&1 | tee -a ci/build.log
 
-      - name: Inspect APK
+      # Resolve the real APK path instead of hardcoding it: AGP may emit
+      # app-debug.apk, a split (`app-arm64-v8a-debug.apk`) or a custom output name
+      # depending on configuration. Searching for the actual file keeps this
+      # correct if the build type or splits ever change.
+      - name: Locate and inspect APK
+        id: apk
         run: |
           set -o pipefail
-          APK=$(find app/build/outputs/apk/debug -name '*.apk' | head -1)
+          APK=$(find app/build/outputs/apk/debug -type f -name '*.apk' | sort | head -1)
+          if [ -z "$APK" ]; then
+            echo "::error::No APK found under app/build/outputs/apk/debug"
+            find app/build/outputs -maxdepth 4 -type f | head -20 || true
+            exit 1
+          fi
+          APK=$(realpath "$APK")
+          echo "apk_path=$APK" >> "$GITHUB_OUTPUT"
+          echo "apk_name=$(basename "$APK")" >> "$GITHUB_OUTPUT"
+          echo "apk_size=$(stat -c%s "$APK")" >> "$GITHUB_OUTPUT"
           {
             echo "## APK"
+            echo "path: $APK"
             ls -l "$APK"
+            echo "sha256: $(sha256sum "$APK" | cut -d' ' -f1)"
             "$ANDROID_HOME"/build-tools/35.0.0/aapt2 dump badging "$APK" 2>/dev/null | head -20
+          } | tee -a ci/build.log
+
+      # The APK is the deliverable users install; the CI evidence commits only
+      # prove it was built. Upload it so it can actually be downloaded from the run.
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PocketPC-debug-apk
+          path: ${{ steps.apk.outputs.apk_path }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Record artifact availability
+        run: |
+          set -o pipefail
+          {
+            echo
+            echo "## Downloadable artifact"
+            echo "name: PocketPC-debug-apk"
+            echo "file: ${{ steps.apk.outputs.apk_name }}"
+            echo "bytes: ${{ steps.apk.outputs.apk_size }}"
+            echo "download: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts"
           } | tee -a ci/build.log
 
       - name: Assemble evidence
