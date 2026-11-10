@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 rootProject.name = "PocketPC"
 
 include(":system:capability")
+include(":system:capability-android")
 include(":app")

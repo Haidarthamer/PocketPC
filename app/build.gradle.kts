@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":system:capability"))
+    implementation(project(":system:capability-android"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
