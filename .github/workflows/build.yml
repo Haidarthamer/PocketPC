@@ -117,7 +117,13 @@ jobs:
             echo "path: $APK"
             ls -l "$APK"
             echo "sha256: $(sha256sum "$APK" | cut -d' ' -f1)"
-            "$ANDROID_HOME"/build-tools/35.0.0/aapt2 dump badging "$APK" 2>/dev/null | head -20
+            BADGING=$("$ANDROID_HOME"/build-tools/35.0.0/aapt2 dump badging "$APK" 2>/dev/null)
+            # Identity, SDK levels and icon resources only: the full dump is ~200 lines of
+            # translated application labels and would bury the rest of this log.
+            echo "$BADGING" | grep -E "^(package|sdkVersion|targetSdkVersion|application:|application-label:|application-icon|launchable-activity|uses-feature)" | head -30
+            echo
+            echo "Icon resources inside the APK:"
+            unzip -l "$APK" | grep -E "res/(mipmap|drawable)[^/]*/ic_launcher" | awk '{print "  " $4 " (" $1 " bytes)"}'
           } | tee -a ci/build.log
 
       # The APK is the deliverable users install; the CI evidence commits only

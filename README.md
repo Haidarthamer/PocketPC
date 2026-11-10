@@ -4,21 +4,27 @@ A desktop-computing environment inside Android: a native desktop shell and windo
 manager, a real ARM64 Linux userspace (PRoot), a real virtual machine backend (QEMU,
 plus AVF where firmware supports it), and an explicitly measured graphics path.
 
-**This repository is at Phase 1.** Read `docs/FEASIBILITY.md` before believing any
-capability claim: it records what has been proven, what is pending, and what is blocked.
+**This repository is at Phase 2.** Read `docs/PHASE2.md` before believing any capability
+claim: it separates *implemented*, *tested*, *verified* and *pending hardware* item by item.
+`docs/FEASIBILITY.md` holds the Phase 0 research and risk register.
 
 ## Honest status
 
 | Area | State |
 | --- | --- |
-| Device capability detection | Implemented; 17/17 unit tests green in CI; **not yet run on the target device** |
-| Android app (diagnostics shell) | Builds to a 9.5 MB debug APK; install/run on hardware **pending** |
-| Desktop shell + window manager | **Not started** (Phase 2) |
+| Desktop shell (wallpaper, icons, context menus) | Implemented + unit tested |
+| Window manager (drag, resize, snap, z-order, restore, workspaces) | Implemented + 38 tests |
+| Taskbar, Start menu, quick settings, system tray | Implemented + tested; **no notification centre** |
+| 9 desktop applications | Implemented, functional |
+| Capability reporting | 8-state model (DETECTED…VERIFIED), 26 tests |
+| GPU verification engine | Implemented + verdict rules tested; **device run pending** |
+| Application icon | Done — adaptive + monochrome + 5 densities |
 | PRoot Linux environment | **Not started** (Phase 5) |
-| QEMU / AVF virtualization | **Not started** (Phase 7) |
-| Linux GPU acceleration | **Not started**; research conclusion: do not promise it |
+| QEMU / AVF virtualization | **Not started** (Phase 7). No KVM and no AVF on the target firmware |
+| Linux GPU acceleration | **Not available** — documented reason in Phase 2 §7 |
 
-Nothing above is a mock. Code that does not exist is listed as not existing.
+Nothing above is a mock. Code that does not exist is listed as not existing, and no
+performance figure is published unless it was measured on the device.
 
 ## Build
 
@@ -27,8 +33,10 @@ authoritative build is GitHub Actions (`.github/workflows/build.yml`). Locally, 
 normal Android toolchain:
 
 ```bash
-./gradlew :system:capability:test      # pure-JVM capability logic, 17 tests
-./gradlew :app:assembleDebug           # APK → app/build/outputs/apk/debug/
+./gradlew :system:capability:test :system:desktop:test \
+          :graphics:compositor:testDebugUnitTest   # 120 tests, pure JVM
+./gradlew :app:assembleDebug                        # APK → app/build/outputs/apk/debug/
+python3 scripts/generate_icons.py                   # regenerate icon assets
 ```
 
 Every push runs both and commits the result to `ci/build-evidence.md`
@@ -47,18 +55,21 @@ grep -n "result" ci/build-evidence.md     # and open the linked run
 adb shell am start -n dev.pocketpc.app/.MainActivity
 ```
 
-The diagnostics screen prints, per feature, whether it is `SUPPORTED`, `LIMITED`,
-`UNSUPPORTED` or `UNKNOWN`, and an explicit `verified: false` line until a real test
-backs it. Please send that screen's contents (§7 of the feasibility report lists the
-five open hardware questions it answers).
+The app opens straight onto the desktop. Open **GPU Diagnostics** and press
+**Run GPU test**: it draws a real workload, reads the pixels back, and reports the
+renderer, API, hardware verdict and measured frame times. Those numbers are what Phase 2
+is waiting on — see `docs/PHASE2.md` §4.2 and §8.
 
 ## Layout
 
 ```
-system/capability/          pure Kotlin: snapshot → availability policy (JVM-testable)
+system/capability/          pure Kotlin: snapshot → 8-state capability verdicts
 system/capability-android/  real probes: EGL, PackageManager, StatFs, thermal
-app/                        Android app (Phase 1: diagnostics shell)
-docs/                       feasibility report, ADRs
+system/desktop/             pure Kotlin: window manager, shell, apps, calculator, keys
+graphics/compositor/        GLES verification engine + GPU verdict rules
+app/                        Compose UI: desktop, windows, taskbar, start menu, apps
+scripts/                    icon generator, CI evidence helpers
+docs/                       PHASE2 report, feasibility report, ADRs, icon previews
 ci/                         committed CI evidence (auto-generated, do not hand-edit)
 ```
 
@@ -66,4 +77,5 @@ ci/                         committed CI evidence (auto-generated, do not hand-e
 
 Real functionality only. No feature is called working until a test proves it on the
 device. PRoot is never described as virtualization. GPU acceleration is never claimed
-because an API exists. Unsupported things are documented, not hidden.
+because an API exists — only a verified frame readback from a real workload can do that.
+Unsupported things are documented, not hidden.
